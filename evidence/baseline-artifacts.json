@@ -1,0 +1,25 @@
+{
+  "baselineCommit": "c33357f",
+  "artifacts": [
+    {
+      "artifact": "src/quayready/contracts/openapi.json",
+      "sha256": "4f3fddaef81ef79051131122fc61c55293464e423609c70f8bc7213bb4f8f57a",
+      "matchesBaseline": true
+    },
+    {
+      "artifact": "src/quayready/contracts/001-app.sql",
+      "sha256": "79f461837107040cf1353945d747c3b2c15dcd71b4524b7fbfa669ef2e4f41a4",
+      "matchesBaseline": true
+    },
+    {
+      "artifact": "src/quayready/contracts/001-target.sql",
+      "sha256": "6f951017de281f92902ce7e48d7fcbc6c04a7fa159e8a574bf2b8030654f67a9",
+      "matchesBaseline": true
+    },
+    {
+      "artifact": "tests/rule-cases.json",
+      "sha256": "c02dd695b0bd32572272f42ce72f362fa5e63fc4290385072538a1dc702a45c0",
+      "matchesBaseline": true
+    }
+  ]
+}

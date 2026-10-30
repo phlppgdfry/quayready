@@ -1,0 +1,601 @@
+{
+  "version": "readiness-v1",
+  "facts": [
+    "hard_hold",
+    "cutoff_reached",
+    "warehouse_missing",
+    "document_missing",
+    "warehouse_unknown",
+    "document_unknown",
+    "document_unavailable",
+    "warehouse_expired",
+    "document_expired",
+    "source_conflict",
+    "missing_pallet",
+    "unexpected_pallet"
+  ],
+  "reasonOrder": [
+    "HARD_HOLD",
+    "CUTOFF_REACHED",
+    "WAREHOUSE_MISSING",
+    "DOCUMENT_MISSING",
+    "WAREHOUSE_UNKNOWN",
+    "DOCUMENT_UNKNOWN",
+    "DOCUMENT_UNAVAILABLE",
+    "WAREHOUSE_EXPIRED",
+    "DOCUMENT_EXPIRED",
+    "SOURCE_CONFLICT",
+    "MISSING_PALLET",
+    "UNEXPECTED_PALLET"
+  ],
+  "statusRules": [
+    {
+      "status": "BLOCKED",
+      "whenAny": [
+        "hard_hold",
+        "cutoff_reached"
+      ]
+    },
+    {
+      "status": "NEEDS_REVIEW",
+      "whenNone": [
+        "hard_hold",
+        "cutoff_reached"
+      ],
+      "whenAny": [
+        "warehouse_missing",
+        "document_missing",
+        "warehouse_unknown",
+        "document_unknown",
+        "document_unavailable",
+        "warehouse_expired",
+        "document_expired",
+        "source_conflict",
+        "missing_pallet",
+        "unexpected_pallet"
+      ]
+    },
+    {
+      "status": "ELIGIBLE_FOR_REVIEW",
+      "whenNone": [
+        "hard_hold",
+        "cutoff_reached",
+        "warehouse_missing",
+        "document_missing",
+        "warehouse_unknown",
+        "document_unknown",
+        "document_unavailable",
+        "warehouse_expired",
+        "document_expired",
+        "source_conflict",
+        "missing_pallet",
+        "unexpected_pallet"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "D00",
+      "scenario": "All three pallets, both sources fresh, AVAILABLE, before cutoff",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "ELIGIBLE_FOR_REVIEW",
+      "expectedReasons": []
+    },
+    {
+      "id": "D01",
+      "scenario": "hard hold",
+      "facts": {
+        "hard_hold": true,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "BLOCKED",
+      "expectedReasons": [
+        "HARD_HOLD"
+      ]
+    },
+    {
+      "id": "D02",
+      "scenario": "cutoff reached",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": true,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "BLOCKED",
+      "expectedReasons": [
+        "CUTOFF_REACHED"
+      ]
+    },
+    {
+      "id": "D03",
+      "scenario": "warehouse missing",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": true,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "WAREHOUSE_MISSING"
+      ]
+    },
+    {
+      "id": "D04",
+      "scenario": "document missing",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": true,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "DOCUMENT_MISSING"
+      ]
+    },
+    {
+      "id": "D05",
+      "scenario": "warehouse unknown",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": true,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "WAREHOUSE_UNKNOWN"
+      ]
+    },
+    {
+      "id": "D06",
+      "scenario": "document unknown",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": true,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "DOCUMENT_UNKNOWN"
+      ]
+    },
+    {
+      "id": "D07",
+      "scenario": "document unavailable",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": true,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "DOCUMENT_UNAVAILABLE"
+      ]
+    },
+    {
+      "id": "D08",
+      "scenario": "warehouse expired",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": true,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "WAREHOUSE_EXPIRED"
+      ]
+    },
+    {
+      "id": "D09",
+      "scenario": "document expired",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": true,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "DOCUMENT_EXPIRED"
+      ]
+    },
+    {
+      "id": "D10",
+      "scenario": "source conflict",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": true,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "SOURCE_CONFLICT"
+      ]
+    },
+    {
+      "id": "D11",
+      "scenario": "missing pallet",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": true,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "MISSING_PALLET"
+      ]
+    },
+    {
+      "id": "D12",
+      "scenario": "unexpected pallet",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": true
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "UNEXPECTED_PALLET"
+      ]
+    },
+    {
+      "id": "D13",
+      "scenario": "Missing and unexpected pallet: both reasons",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": true,
+        "unexpected_pallet": true
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "MISSING_PALLET",
+        "UNEXPECTED_PALLET"
+      ]
+    },
+    {
+      "id": "D14",
+      "scenario": "Expired hard hold stays blocking",
+      "facts": {
+        "hard_hold": true,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": true,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "BLOCKED",
+      "expectedReasons": [
+        "HARD_HOLD",
+        "WAREHOUSE_EXPIRED"
+      ]
+    },
+    {
+      "id": "D15",
+      "scenario": "Cutoff and missing pallet",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": true,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": true,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "BLOCKED",
+      "expectedReasons": [
+        "CUTOFF_REACHED",
+        "MISSING_PALLET"
+      ]
+    },
+    {
+      "id": "D16",
+      "scenario": "Both source evidence absent",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": true,
+        "document_missing": true,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "WAREHOUSE_MISSING",
+        "DOCUMENT_MISSING"
+      ]
+    },
+    {
+      "id": "D17",
+      "scenario": "Corrected higher warehouse snapshot has exact three pallets",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "ELIGIBLE_FOR_REVIEW",
+      "expectedReasons": []
+    },
+    {
+      "id": "D18",
+      "scenario": "Identical event replay does not alter current good state",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "ELIGIBLE_FOR_REVIEW",
+      "expectedReasons": []
+    },
+    {
+      "id": "D19",
+      "scenario": "Lower incoming revision ignored while current evidence fresh",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "ELIGIBLE_FOR_REVIEW",
+      "expectedReasons": []
+    },
+    {
+      "id": "D20",
+      "scenario": "Conflicting replay opens integrity guard",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": true,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "SOURCE_CONFLICT"
+      ]
+    },
+    {
+      "id": "D21",
+      "scenario": "At source expiry boundary exactly",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": true,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReasons": [
+        "DOCUMENT_EXPIRED"
+      ]
+    },
+    {
+      "id": "D22",
+      "scenario": "At cutoff boundary exactly",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": true,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "BLOCKED",
+      "expectedReasons": [
+        "CUTOFF_REACHED"
+      ]
+    },
+    {
+      "id": "D23",
+      "scenario": "One millisecond before source expiry/cutoff and all complete",
+      "facts": {
+        "hard_hold": false,
+        "cutoff_reached": false,
+        "warehouse_missing": false,
+        "document_missing": false,
+        "warehouse_unknown": false,
+        "document_unknown": false,
+        "document_unavailable": false,
+        "warehouse_expired": false,
+        "document_expired": false,
+        "source_conflict": false,
+        "missing_pallet": false,
+        "unexpected_pallet": false
+      },
+      "expectedStatus": "ELIGIBLE_FOR_REVIEW",
+      "expectedReasons": []
+    }
+  ],
+  "note": "Normalised independent decision facts. This specification is not runtime application logic. Receipt/revision/clock-to-fact mapping still requires application tests."
+}

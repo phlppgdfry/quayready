@@ -1,0 +1,2924 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "QuayReady engineering contract",
+    "version": "1.0.0",
+    "description": "Local synthetic-data lab. No NDQ affiliation. Not physical or customs departure authorisation. See api-semantics.md for cross-field, canonicalisation and temporal rules. No runtime is implemented."
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080"
+    }
+  ],
+  "paths": {
+    "/v1/session": {
+      "post": {
+        "operationId": "createSession",
+        "summary": "createSession",
+        "description": "32-byte random login tokens from ignored server configuration map to stable subject/site/roles. Max 5 login attempts per minute per process. Absolute session lifetime 30min; restart logs out. No token in logs.",
+        "x-required-roles": [
+          "human_login"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "New server-side session; no built-in credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "subject": "DEMO-OPERATOR",
+                      "siteId": "DEMO-ZEE",
+                      "roles": [
+                        "operator"
+                      ],
+                      "csrfToken": "SYNTHETIC-CSRF-NOT-A-VALID-TOKEN-0000",
+                      "expiresAt": "2026-11-02T12:10:00Z"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Set-Cookie": {
+                "description": "qr_session=<random>; HttpOnly; SameSite=Strict; Path=/; Max-Age=1800. Secure omitted ONLY for loopback HTTP.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "413": {
+            "$ref": "#/components/responses/413"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "http://127.0.0.1:8080"
+            },
+            "description": "Exact browser origin; local demo only."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              },
+              "examples": {
+                "synthetic": {
+                  "value": {
+                    "loginToken": "SYNTHETIC-EXAMPLE-NOT-A-VALID-KEY-0000"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteSession",
+        "summary": "deleteSession",
+        "description": "",
+        "x-required-roles": [
+          "operator",
+          "reviewer",
+          "auditor"
+        ],
+        "security": [
+          {
+            "SessionCookie": [],
+            "CsrfToken": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "204": {
+            "description": "Session removed; cookie expired."
+          }
+        },
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "http://127.0.0.1:8080"
+            },
+            "description": "Exact browser origin; local demo only."
+          }
+        ]
+      }
+    },
+    "/v1/orders": {
+      "post": {
+        "operationId": "receiveOrder",
+        "summary": "receiveOrder",
+        "description": "Source/site/kind bound to credential. No JSON source/site overrides. Application validation is strict, no type coercion. Revision rules and hash algorithm in domain-rules.md.",
+        "x-required-roles": [
+          "order_source"
+        ],
+        "security": [
+          {
+            "SourceKey": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "New receipt committed, including STALE_IGNORED/REVISION_REPLAY",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "receiptId": "00000000-0000-4000-8000-000000000002",
+                      "shipmentId": "00000000-0000-4000-8000-000000000001",
+                      "eventId": "DEMO-WMS-E001",
+                      "result": "APPLIED",
+                      "receivedAt": "2026-11-02T11:40:00Z",
+                      "replayed": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical event-key replay; original receipt, replayed true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "receiptId": "00000000-0000-4000-8000-000000000002",
+                      "shipmentId": "00000000-0000-4000-8000-000000000001",
+                      "eventId": "DEMO-WMS-E001",
+                      "result": "APPLIED",
+                      "receivedAt": "2026-11-02T11:40:00Z",
+                      "replayed": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "413": {
+            "$ref": "#/components/responses/413"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              },
+              "examples": {
+                "synthetic": {
+                  "value": {
+                    "schemaVersion": 1,
+                    "eventId": "DEMO-ORDER-E001",
+                    "externalOrderRef": "DEMO-ORDER-001",
+                    "orderRevision": 1,
+                    "route": "DEMO-EU-GB",
+                    "cutoffAt": "2026-11-02T12:00:00Z",
+                    "expectedPalletIds": [
+                      "DEMO-P001",
+                      "DEMO-P002",
+                      "DEMO-P003"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/events": {
+      "post": {
+        "operationId": "receiveSourceSnapshot",
+        "summary": "receiveSourceSnapshot",
+        "description": "Source/site/kind bound to credential. No JSON source/site overrides. Application validation is strict, no type coercion. Revision rules and hash algorithm in domain-rules.md.",
+        "x-required-roles": [
+          "warehouse_source",
+          "document_source"
+        ],
+        "security": [
+          {
+            "SourceKey": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "New receipt committed, including STALE_IGNORED/REVISION_REPLAY",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "receiptId": "00000000-0000-4000-8000-000000000002",
+                      "shipmentId": "00000000-0000-4000-8000-000000000001",
+                      "eventId": "DEMO-WMS-E001",
+                      "result": "APPLIED",
+                      "receivedAt": "2026-11-02T11:40:00Z",
+                      "replayed": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical event-key replay; original receipt, replayed true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "receiptId": "00000000-0000-4000-8000-000000000002",
+                      "shipmentId": "00000000-0000-4000-8000-000000000001",
+                      "eventId": "DEMO-WMS-E001",
+                      "result": "APPLIED",
+                      "receivedAt": "2026-11-02T11:40:00Z",
+                      "replayed": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "413": {
+            "$ref": "#/components/responses/413"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              },
+              "examples": {
+                "synthetic": {
+                  "value": {
+                    "schemaVersion": 1,
+                    "eventId": "DEMO-WMS-E001",
+                    "shipmentId": "00000000-0000-4000-8000-000000000001",
+                    "sourceRevision": 1,
+                    "observedAt": "2026-11-02T11:40:00Z",
+                    "watermark": "DEMO-WMS-W001",
+                    "kind": "warehouse_snapshot",
+                    "status": "KNOWN",
+                    "scannedPalletIds": [
+                      "DEMO-P001",
+                      "DEMO-P002"
+                    ],
+                    "hardHold": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/shipments/{id}": {
+      "get": {
+        "operationId": "getShipment",
+        "summary": "getShipment",
+        "description": "",
+        "x-required-roles": [
+          "operator",
+          "reviewer",
+          "auditor"
+        ],
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current computed readiness, independent proposal and delivery axes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shipment"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "shipmentId": "00000000-0000-4000-8000-000000000001",
+                      "siteId": "DEMO-ZEE",
+                      "externalOrderRef": "DEMO-ORDER-001",
+                      "orderRevision": 1,
+                      "cutoffAt": "2026-11-02T12:00:00Z",
+                      "expectedPalletIds": [
+                        "DEMO-P001",
+                        "DEMO-P002",
+                        "DEMO-P003"
+                      ],
+                      "scannedPalletIds": [
+                        "DEMO-P001",
+                        "DEMO-P002"
+                      ],
+                      "evidenceVersion": 3,
+                      "readiness": "NEEDS_REVIEW",
+                      "evaluatedAt": "2026-11-02T11:40:00Z",
+                      "sources": [
+                        {
+                          "kind": "WAREHOUSE",
+                          "receiptId": "00000000-0000-4000-8000-000000000002",
+                          "sourceRevision": 1,
+                          "observedAt": "2026-11-02T11:40:00Z",
+                          "expiresAt": "2026-11-02T11:55:00Z",
+                          "expired": false,
+                          "status": "KNOWN",
+                          "conflicted": false
+                        },
+                        {
+                          "kind": "DOCUMENT",
+                          "receiptId": "00000000-0000-4000-8000-000000000003",
+                          "sourceRevision": 1,
+                          "observedAt": "2026-11-02T11:40:00Z",
+                          "expiresAt": "2026-11-02T11:55:00Z",
+                          "expired": false,
+                          "status": "AVAILABLE",
+                          "conflicted": false
+                        }
+                      ],
+                      "issues": [
+                        {
+                          "sequence": 1,
+                          "shipmentId": "00000000-0000-4000-8000-000000000001",
+                          "reasonCode": "MISSING_PALLET",
+                          "owner": "Warehouse",
+                          "palletIds": [
+                            "DEMO-P003"
+                          ],
+                          "firstSeenAt": "2026-11-02T11:40:00Z",
+                          "resolvedAt": null
+                        }
+                      ],
+                      "latestProposal": null,
+                      "delivery": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": ""
+          }
+        ]
+      }
+    },
+    "/v1/issues": {
+      "get": {
+        "operationId": "listIssues",
+        "summary": "listIssues",
+        "description": "",
+        "x-required-roles": [
+          "operator",
+          "reviewer"
+        ],
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Site-filtered issue episodes ordered by immutable sequence",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuePage"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "items": [
+                        {
+                          "sequence": 1,
+                          "shipmentId": "00000000-0000-4000-8000-000000000001",
+                          "reasonCode": "MISSING_PALLET",
+                          "owner": "Warehouse",
+                          "palletIds": [
+                            "DEMO-P003"
+                          ],
+                          "firstSeenAt": "2026-11-02T11:40:00Z",
+                          "resolvedAt": null
+                        }
+                      ],
+                      "nextAfter": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": ""
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Return sequence > after in ascending order; nextAfter is last returned sequence when another row exists."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OPEN",
+                "RESOLVED",
+                "ALL"
+              ],
+              "default": "OPEN"
+            },
+            "description": ""
+          }
+        ]
+      }
+    },
+    "/v1/shipments/{id}/proposals": {
+      "post": {
+        "operationId": "createProposal",
+        "summary": "createProposal",
+        "description": "409 NOT_ELIGIBLE, STALE_PROPOSAL, ACTIVE_PROPOSAL, DISPATCH_EXISTS or IDEMPOTENCY_CONFLICT. No outbox created here.",
+        "x-required-roles": [
+          "operator"
+        ],
+        "security": [
+          {
+            "SessionCookie": [],
+            "CsrfToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Immutable version-bound proposal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Proposal"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "proposalId": "00000000-0000-4000-8000-000000000002",
+                      "shipmentId": "00000000-0000-4000-8000-000000000001",
+                      "requestedBy": "DEMO-OPERATOR",
+                      "evidenceVersion": 4,
+                      "evidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                      "rulesVersion": "readiness-v1",
+                      "createdAt": "2026-11-02T11:41:00Z",
+                      "expiresAt": "2026-11-02T11:46:00Z",
+                      "status": "PENDING_REVIEW",
+                      "currentlyValid": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical scoped create replay; current effective status included",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Proposal"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "proposalId": "00000000-0000-4000-8000-000000000002",
+                      "shipmentId": "00000000-0000-4000-8000-000000000001",
+                      "requestedBy": "DEMO-OPERATOR",
+                      "evidenceVersion": 4,
+                      "evidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                      "rulesVersion": "readiness-v1",
+                      "createdAt": "2026-11-02T11:41:00Z",
+                      "expiresAt": "2026-11-02T11:46:00Z",
+                      "status": "PENDING_REVIEW",
+                      "currentlyValid": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "413": {
+            "$ref": "#/components/responses/413"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": ""
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+            },
+            "description": "Scoped to site + authenticated subject + operation. Same key/different request = 409."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "http://127.0.0.1:8080"
+            },
+            "description": "Exact browser origin; local demo only."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposalRequest"
+              },
+              "examples": {
+                "synthetic": {
+                  "value": {
+                    "expectedEvidenceVersion": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/proposals/{id}/decision": {
+      "post": {
+        "operationId": "reviewProposal",
+        "summary": "reviewProposal",
+        "description": "403 SELF_APPROVAL based on stable subject, never session. 409 STALE_PROPOSAL, PROPOSAL_EXPIRED, NOT_ELIGIBLE, DECISION_EXISTS, DISPATCH_EXISTS or IDEMPOTENCY_CONFLICT. Exact decision replay returns original immutable decision even if evidence later changes; it never authorises another send.",
+        "x-required-roles": [
+          "reviewer"
+        ],
+        "security": [
+          {
+            "SessionCookie": [],
+            "CsrfToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed immutable decision; APPROVE includes atomically persisted outbox ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Decision"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "decisionId": "00000000-0000-4000-8000-000000000003",
+                      "proposalId": "00000000-0000-4000-8000-000000000002",
+                      "decision": "APPROVE",
+                      "reviewer": "DEMO-REVIEWER",
+                      "decidedAt": "2026-11-02T11:42:00Z",
+                      "dispatchId": "00000000-0000-4000-8000-000000000003"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "413": {
+            "$ref": "#/components/responses/413"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": ""
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+            },
+            "description": "Scoped to site + authenticated subject + operation. Same key/different request = 409."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "http://127.0.0.1:8080"
+            },
+            "description": "Exact browser origin; local demo only."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecisionRequest"
+              },
+              "examples": {
+                "synthetic": {
+                  "value": {
+                    "decision": "APPROVE",
+                    "expectedEvidenceVersion": 4,
+                    "reason": "Synthetic source evidence checked"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/deliveries/{dispatchId}": {
+      "get": {
+        "operationId": "getDelivery",
+        "summary": "getDelivery",
+        "description": "",
+        "x-required-roles": [
+          "operator",
+          "reviewer",
+          "auditor"
+        ],
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Local delivery status; target failure is data, not a failure of this GET",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Delivery"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "dispatchId": "00000000-0000-4000-8000-000000000003",
+                      "shipmentId": "00000000-0000-4000-8000-000000000001",
+                      "status": "CONFIRMED",
+                      "postAttempts": 1,
+                      "lookupAttempts": 1,
+                      "nextAction": "LOOKUP",
+                      "targetReceipt": {
+                        "dispatchId": "00000000-0000-4000-8000-000000000003",
+                        "receiptId": "00000000-0000-4000-8000-000000000001",
+                        "payloadHash": "469b0416f61ab3dbe7b0d1aba74aac8373d93b76a3e2e648cb533e13db03ab50",
+                        "status": "ACCEPTED_FOR_REVIEW",
+                        "acceptedAt": "2026-11-02T11:42:00Z"
+                      },
+                      "lastErrorCode": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dispatchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": ""
+          }
+        ]
+      }
+    },
+    "/v1/shipments/{id}/audit": {
+      "get": {
+        "operationId": "getAudit",
+        "summary": "getAudit",
+        "description": "",
+        "x-required-roles": [
+          "auditor",
+          "reviewer"
+        ],
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Safe append-only event summaries; no raw request bodies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditPage"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "items": [
+                        {
+                          "sequence": 1,
+                          "actor": "DEMO-OPERATOR",
+                          "kind": "proposal_created",
+                          "at": "2026-11-02T11:41:00Z",
+                          "correlationId": "00000000-0000-4000-8000-000000000001",
+                          "detail": "Version 4"
+                        }
+                      ],
+                      "nextAfter": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": ""
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": ""
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Return sequence > after in ascending order; nextAfter is last returned sequence when another row exists."
+          }
+        ]
+      }
+    },
+    "/health/live": {
+      "get": {
+        "operationId": "getLiveness",
+        "summary": "getLiveness",
+        "description": "",
+        "x-required-roles": [],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Process responds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Live"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "status": "ALIVE"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "getReadiness",
+        "summary": "getReadiness",
+        "description": "",
+        "x-required-roles": [],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Database connection, schema version and write readiness are acceptable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ready"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "status": "READY"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      }
+    },
+    "/mock/v1/dispatch-requests": {
+      "post": {
+        "operationId": "receiveMockDispatch",
+        "summary": "receiveMockDispatch",
+        "description": "Separate server on 127.0.0.1:8081, separate DB. Source site bound to WorkerKey; seed orderref/revision required. 409 PAYLOAD_CONFLICT for changed ID payload; TARGET_SHIPMENT_CONFLICT for another dispatch ID on same shipment. No physical/customs release. Fault injection is process configuration in tests, not a public endpoint.",
+        "x-required-roles": [
+          "worker"
+        ],
+        "security": [
+          {
+            "WorkerKey": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "First request effect committed before response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetReceipt"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "dispatchId": "00000000-0000-4000-8000-000000000003",
+                      "receiptId": "00000000-0000-4000-8000-000000000001",
+                      "payloadHash": "469b0416f61ab3dbe7b0d1aba74aac8373d93b76a3e2e648cb533e13db03ab50",
+                      "status": "ACCEPTED_FOR_REVIEW",
+                      "acceptedAt": "2026-11-02T11:42:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Same dispatch ID and payload hash; original receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetReceipt"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "dispatchId": "00000000-0000-4000-8000-000000000003",
+                      "receiptId": "00000000-0000-4000-8000-000000000001",
+                      "payloadHash": "469b0416f61ab3dbe7b0d1aba74aac8373d93b76a3e2e648cb533e13db03ab50",
+                      "status": "ACCEPTED_FOR_REVIEW",
+                      "acceptedAt": "2026-11-02T11:42:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "413": {
+            "$ref": "#/components/responses/413"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchRequest"
+              },
+              "examples": {
+                "synthetic": {
+                  "value": {
+                    "dispatchId": "00000000-0000-4000-8000-000000000003",
+                    "shipmentRef": "DEMO-ORDER-001",
+                    "orderRevision": 1,
+                    "evidenceVersion": 4,
+                    "evidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "rulesVersion": "readiness-v1",
+                    "approvedProposalId": "00000000-0000-4000-8000-000000000002",
+                    "requestType": "REQUEST_DISPATCH_REVIEW"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "http://127.0.0.1:8081"
+          }
+        ]
+      }
+    },
+    "/mock/v1/dispatch-requests/{id}": {
+      "get": {
+        "operationId": "getMockDispatch",
+        "summary": "getMockDispatch",
+        "description": "",
+        "x-required-roles": [
+          "worker"
+        ],
+        "security": [
+          {
+            "WorkerKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed effect lookup; 404 means absent at lookup time only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetReceipt"
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "dispatchId": "00000000-0000-4000-8000-000000000003",
+                      "receiptId": "00000000-0000-4000-8000-000000000001",
+                      "payloadHash": "469b0416f61ab3dbe7b0d1aba74aac8373d93b76a3e2e648cb533e13db03ab50",
+                      "status": "ACCEPTED_FOR_REVIEW",
+                      "acceptedAt": "2026-11-02T11:42:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": ""
+          }
+        ],
+        "servers": [
+          {
+            "url": "http://127.0.0.1:8081"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "SessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "qr_session"
+      },
+      "CsrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-Token"
+      },
+      "SourceKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Source-Key"
+      },
+      "WorkerKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Worker-Key"
+      }
+    },
+    "schemas": {
+      "Token": {
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 100,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+      },
+      "Instant": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+      },
+      "Uuid": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "Hash": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "MALFORMED_JSON",
+              "UNAUTHENTICATED",
+              "FORBIDDEN",
+              "SELF_APPROVAL",
+              "CSRF_FAILED",
+              "ORIGIN_REJECTED",
+              "NOT_FOUND",
+              "PAYLOAD_CONFLICT",
+              "REVISION_CONFLICT",
+              "REVISION_TIME_CONFLICT",
+              "ORDER_EXISTS",
+              "STALE_PROPOSAL",
+              "PROPOSAL_EXPIRED",
+              "NOT_ELIGIBLE",
+              "ACTIVE_PROPOSAL",
+              "DISPATCH_EXISTS",
+              "IDEMPOTENCY_CONFLICT",
+              "DECISION_EXISTS",
+              "PAYLOAD_TOO_LARGE",
+              "UNSUPPORTED_MEDIA_TYPE",
+              "INVALID_SCHEMA",
+              "DATABASE_UNAVAILABLE",
+              "TARGET_CONTRACT_ERROR",
+              "RETRY_EXHAUSTED",
+              "TARGET_UNCERTAIN",
+              "TARGET_SHIPMENT_CONFLICT",
+              "RATE_LIMITED"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "correlationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "fieldErrors": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "code": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "required": [
+                "field",
+                "code"
+              ]
+            }
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "correlationId",
+          "retryable",
+          "fieldErrors"
+        ]
+      },
+      "Order": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "eventId": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "externalOrderRef": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "orderRevision": {
+            "type": "integer",
+            "const": 1
+          },
+          "route": {
+            "const": "DEMO-EU-GB",
+            "type": "string"
+          },
+          "cutoffAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "expectedPalletIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 100,
+            "minItems": 1
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "eventId",
+          "externalOrderRef",
+          "orderRevision",
+          "route",
+          "cutoffAt",
+          "expectedPalletIds"
+        ],
+        "examples": [
+          {
+            "schemaVersion": 1,
+            "eventId": "DEMO-ORDER-E001",
+            "externalOrderRef": "DEMO-ORDER-001",
+            "orderRevision": 1,
+            "route": "DEMO-EU-GB",
+            "cutoffAt": "2026-11-02T12:00:00Z",
+            "expectedPalletIds": [
+              "DEMO-P001",
+              "DEMO-P002",
+              "DEMO-P003"
+            ]
+          }
+        ]
+      },
+      "ProposalRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedEvidenceVersion": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "expectedEvidenceVersion"
+        ],
+        "examples": [
+          {
+            "expectedEvidenceVersion": 4
+          }
+        ]
+      },
+      "DecisionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "APPROVE",
+              "REJECT"
+            ]
+          },
+          "expectedEvidenceVersion": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "decision",
+          "expectedEvidenceVersion",
+          "reason"
+        ],
+        "examples": [
+          {
+            "decision": "APPROVE",
+            "expectedEvidenceVersion": 4,
+            "reason": "Synthetic source evidence checked"
+          }
+        ]
+      },
+      "Receipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "receiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "eventId": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "APPLIED",
+              "STALE_IGNORED",
+              "REVISION_REPLAY"
+            ]
+          },
+          "receivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "replayed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "receiptId",
+          "shipmentId",
+          "eventId",
+          "result",
+          "receivedAt",
+          "replayed"
+        ],
+        "examples": [
+          {
+            "receiptId": "00000000-0000-4000-8000-000000000002",
+            "shipmentId": "00000000-0000-4000-8000-000000000001",
+            "eventId": "DEMO-WMS-E001",
+            "result": "APPLIED",
+            "receivedAt": "2026-11-02T11:40:00Z",
+            "replayed": false
+          }
+        ]
+      },
+      "Proposal": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestedBy": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "evidenceVersion": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "evidenceHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "rulesVersion": {
+            "const": "readiness-v1",
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_REVIEW",
+              "REJECTED",
+              "APPROVED",
+              "INVALIDATED",
+              "EXPIRED"
+            ]
+          },
+          "currentlyValid": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "proposalId",
+          "shipmentId",
+          "requestedBy",
+          "evidenceVersion",
+          "evidenceHash",
+          "rulesVersion",
+          "createdAt",
+          "expiresAt",
+          "status",
+          "currentlyValid"
+        ],
+        "examples": [
+          {
+            "proposalId": "00000000-0000-4000-8000-000000000002",
+            "shipmentId": "00000000-0000-4000-8000-000000000001",
+            "requestedBy": "DEMO-OPERATOR",
+            "evidenceVersion": 4,
+            "evidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rulesVersion": "readiness-v1",
+            "createdAt": "2026-11-02T11:41:00Z",
+            "expiresAt": "2026-11-02T11:46:00Z",
+            "status": "PENDING_REVIEW",
+            "currentlyValid": true
+          }
+        ]
+      },
+      "Decision": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "decisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "proposalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "APPROVE",
+              "REJECT"
+            ]
+          },
+          "reviewer": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "dispatchId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "decisionId",
+          "proposalId",
+          "decision",
+          "reviewer",
+          "decidedAt",
+          "dispatchId"
+        ],
+        "examples": [
+          {
+            "decisionId": "00000000-0000-4000-8000-000000000003",
+            "proposalId": "00000000-0000-4000-8000-000000000002",
+            "decision": "APPROVE",
+            "reviewer": "DEMO-REVIEWER",
+            "decidedAt": "2026-11-02T11:42:00Z",
+            "dispatchId": "00000000-0000-4000-8000-000000000003"
+          }
+        ]
+      },
+      "DispatchRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "dispatchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipmentRef": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "orderRevision": {
+            "type": "integer",
+            "const": 1
+          },
+          "evidenceVersion": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "evidenceHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "rulesVersion": {
+            "const": "readiness-v1",
+            "type": "string"
+          },
+          "approvedProposalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestType": {
+            "const": "REQUEST_DISPATCH_REVIEW",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dispatchId",
+          "shipmentRef",
+          "orderRevision",
+          "evidenceVersion",
+          "evidenceHash",
+          "rulesVersion",
+          "approvedProposalId",
+          "requestType"
+        ],
+        "examples": [
+          {
+            "dispatchId": "00000000-0000-4000-8000-000000000003",
+            "shipmentRef": "DEMO-ORDER-001",
+            "orderRevision": 1,
+            "evidenceVersion": 4,
+            "evidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "rulesVersion": "readiness-v1",
+            "approvedProposalId": "00000000-0000-4000-8000-000000000002",
+            "requestType": "REQUEST_DISPATCH_REVIEW"
+          }
+        ]
+      },
+      "TargetReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "dispatchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "payloadHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "status": {
+            "type": "string",
+            "const": "ACCEPTED_FOR_REVIEW"
+          },
+          "acceptedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          }
+        },
+        "required": [
+          "dispatchId",
+          "receiptId",
+          "payloadHash",
+          "status",
+          "acceptedAt"
+        ],
+        "examples": [
+          {
+            "dispatchId": "00000000-0000-4000-8000-000000000003",
+            "receiptId": "00000000-0000-4000-8000-000000000001",
+            "payloadHash": "469b0416f61ab3dbe7b0d1aba74aac8373d93b76a3e2e648cb533e13db03ab50",
+            "status": "ACCEPTED_FOR_REVIEW",
+            "acceptedAt": "2026-11-02T11:42:00Z"
+          }
+        ]
+      },
+      "Delivery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "dispatchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "SENDING",
+              "RETRY_WAIT",
+              "CONFIRMED",
+              "MANUAL_REVIEW",
+              "CANCELLED_BEFORE_SEND"
+            ]
+          },
+          "postAttempts": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "lookupAttempts": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "nextAction": {
+            "type": "string",
+            "enum": [
+              "POST",
+              "LOOKUP"
+            ]
+          },
+          "targetReceipt": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TargetReceipt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lastErrorCode": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "dispatchId",
+          "shipmentId",
+          "status",
+          "postAttempts",
+          "lookupAttempts",
+          "nextAction",
+          "targetReceipt",
+          "lastErrorCode"
+        ],
+        "examples": [
+          {
+            "dispatchId": "00000000-0000-4000-8000-000000000003",
+            "shipmentId": "00000000-0000-4000-8000-000000000001",
+            "status": "CONFIRMED",
+            "postAttempts": 1,
+            "lookupAttempts": 1,
+            "nextAction": "LOOKUP",
+            "targetReceipt": {
+              "dispatchId": "00000000-0000-4000-8000-000000000003",
+              "receiptId": "00000000-0000-4000-8000-000000000001",
+              "payloadHash": "469b0416f61ab3dbe7b0d1aba74aac8373d93b76a3e2e648cb533e13db03ab50",
+              "status": "ACCEPTED_FOR_REVIEW",
+              "acceptedAt": "2026-11-02T11:42:00Z"
+            },
+            "lastErrorCode": null
+          }
+        ]
+      },
+      "SourceView": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "WAREHOUSE",
+              "DOCUMENT"
+            ]
+          },
+          "receiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "expired": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "KNOWN",
+              "AVAILABLE",
+              "MISSING",
+              "UNKNOWN",
+              "HOLD"
+            ]
+          },
+          "conflicted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind",
+          "receiptId",
+          "sourceRevision",
+          "observedAt",
+          "expiresAt",
+          "expired",
+          "status",
+          "conflicted"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "WAREHOUSE"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "KNOWN",
+                    "UNKNOWN"
+                  ]
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "AVAILABLE",
+                    "MISSING",
+                    "UNKNOWN",
+                    "HOLD"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Issue": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reasonCode": {
+            "type": "string",
+            "enum": [
+              "HARD_HOLD",
+              "CUTOFF_REACHED",
+              "WAREHOUSE_MISSING",
+              "DOCUMENT_MISSING",
+              "WAREHOUSE_UNKNOWN",
+              "DOCUMENT_UNKNOWN",
+              "DOCUMENT_UNAVAILABLE",
+              "WAREHOUSE_EXPIRED",
+              "DOCUMENT_EXPIRED",
+              "SOURCE_CONFLICT",
+              "MISSING_PALLET",
+              "UNEXPECTED_PALLET",
+              "POST_APPROVAL_CHANGE"
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "enum": [
+              "Warehouse",
+              "Documents",
+              "Planner",
+              "Integration"
+            ]
+          },
+          "palletIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "firstSeenAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "resolvedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "sequence",
+          "shipmentId",
+          "reasonCode",
+          "owner",
+          "palletIds",
+          "firstSeenAt",
+          "resolvedAt"
+        ],
+        "examples": [
+          {
+            "sequence": 1,
+            "shipmentId": "00000000-0000-4000-8000-000000000001",
+            "reasonCode": "MISSING_PALLET",
+            "owner": "Warehouse",
+            "palletIds": [
+              "DEMO-P003"
+            ],
+            "firstSeenAt": "2026-11-02T11:40:00Z",
+            "resolvedAt": null
+          }
+        ]
+      },
+      "AuditEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "actor": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "correlationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "detail": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Allowlisted safe summary. No raw payloads, headers, tokens or exception traces."
+          }
+        },
+        "required": [
+          "sequence",
+          "actor",
+          "kind",
+          "at",
+          "correlationId",
+          "detail"
+        ]
+      },
+      "SessionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "loginToken": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 128,
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "loginToken"
+        ],
+        "examples": [
+          {
+            "loginToken": "SYNTHETIC-EXAMPLE-NOT-A-VALID-KEY-0000"
+          }
+        ]
+      },
+      "Session": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "subject": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "siteId": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "operator",
+                "reviewer",
+                "auditor"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "csrfToken": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 128
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          }
+        },
+        "required": [
+          "subject",
+          "siteId",
+          "roles",
+          "csrfToken",
+          "expiresAt"
+        ],
+        "examples": [
+          {
+            "subject": "DEMO-OPERATOR",
+            "siteId": "DEMO-ZEE",
+            "roles": [
+              "operator"
+            ],
+            "csrfToken": "SYNTHETIC-CSRF-NOT-A-VALID-TOKEN-0000",
+            "expiresAt": "2026-11-02T12:10:00Z"
+          }
+        ]
+      },
+      "WarehouseSnapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "eventId": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "watermark": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "kind": {
+            "type": "string",
+            "const": "warehouse_snapshot"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "KNOWN",
+              "UNKNOWN"
+            ]
+          },
+          "scannedPalletIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "hardHold": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "eventId",
+          "shipmentId",
+          "sourceRevision",
+          "observedAt",
+          "watermark",
+          "kind",
+          "status",
+          "scannedPalletIds",
+          "hardHold"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "UNKNOWN"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "scannedPalletIds": {
+                  "maxItems": 0
+                }
+              }
+            }
+          }
+        ],
+        "examples": [
+          {
+            "schemaVersion": 1,
+            "eventId": "DEMO-WMS-E001",
+            "shipmentId": "00000000-0000-4000-8000-000000000001",
+            "sourceRevision": 1,
+            "observedAt": "2026-11-02T11:40:00Z",
+            "watermark": "DEMO-WMS-W001",
+            "kind": "warehouse_snapshot",
+            "status": "KNOWN",
+            "scannedPalletIds": [
+              "DEMO-P001",
+              "DEMO-P002"
+            ],
+            "hardHold": false
+          }
+        ]
+      },
+      "DocumentSnapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "eventId": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "watermark": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "kind": {
+            "type": "string",
+            "const": "document_snapshot"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "MISSING",
+              "UNKNOWN",
+              "HOLD"
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "eventId",
+          "shipmentId",
+          "sourceRevision",
+          "observedAt",
+          "watermark",
+          "kind",
+          "status"
+        ],
+        "examples": [
+          {
+            "schemaVersion": 1,
+            "eventId": "DEMO-DOC-E001",
+            "shipmentId": "00000000-0000-4000-8000-000000000001",
+            "sourceRevision": 1,
+            "observedAt": "2026-11-02T11:40:00Z",
+            "watermark": "DEMO-DOC-W001",
+            "kind": "document_snapshot",
+            "status": "AVAILABLE"
+          }
+        ]
+      },
+      "Event": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/WarehouseSnapshot"
+          },
+          {
+            "$ref": "#/components/schemas/DocumentSnapshot"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "warehouse_snapshot": "#/components/schemas/WarehouseSnapshot",
+            "document_snapshot": "#/components/schemas/DocumentSnapshot"
+          }
+        },
+        "examples": [
+          {
+            "schemaVersion": 1,
+            "eventId": "DEMO-WMS-E001",
+            "shipmentId": "00000000-0000-4000-8000-000000000001",
+            "sourceRevision": 1,
+            "observedAt": "2026-11-02T11:40:00Z",
+            "watermark": "DEMO-WMS-W001",
+            "kind": "warehouse_snapshot",
+            "status": "KNOWN",
+            "scannedPalletIds": [
+              "DEMO-P001",
+              "DEMO-P002"
+            ],
+            "hardHold": false
+          }
+        ]
+      },
+      "Shipment": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "siteId": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "externalOrderRef": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+          },
+          "orderRevision": {
+            "const": 1,
+            "type": "integer"
+          },
+          "cutoffAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "expectedPalletIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 100,
+            "minItems": 1
+          },
+          "scannedPalletIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,99}$"
+            },
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "evidenceVersion": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "readiness": {
+            "type": "string",
+            "enum": [
+              "NEEDS_REVIEW",
+              "BLOCKED",
+              "ELIGIBLE_FOR_REVIEW"
+            ]
+          },
+          "evaluatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "sources": {
+            "type": "array",
+            "maxItems": 2,
+            "items": {
+              "$ref": "#/components/schemas/SourceView"
+            }
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Issue"
+            }
+          },
+          "latestProposal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Proposal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "delivery": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Delivery"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "shipmentId",
+          "siteId",
+          "externalOrderRef",
+          "orderRevision",
+          "cutoffAt",
+          "expectedPalletIds",
+          "scannedPalletIds",
+          "evidenceVersion",
+          "readiness",
+          "evaluatedAt",
+          "sources",
+          "issues",
+          "latestProposal",
+          "delivery"
+        ],
+        "examples": [
+          {
+            "shipmentId": "00000000-0000-4000-8000-000000000001",
+            "siteId": "DEMO-ZEE",
+            "externalOrderRef": "DEMO-ORDER-001",
+            "orderRevision": 1,
+            "cutoffAt": "2026-11-02T12:00:00Z",
+            "expectedPalletIds": [
+              "DEMO-P001",
+              "DEMO-P002",
+              "DEMO-P003"
+            ],
+            "scannedPalletIds": [
+              "DEMO-P001",
+              "DEMO-P002"
+            ],
+            "evidenceVersion": 3,
+            "readiness": "NEEDS_REVIEW",
+            "evaluatedAt": "2026-11-02T11:40:00Z",
+            "sources": [
+              {
+                "kind": "WAREHOUSE",
+                "receiptId": "00000000-0000-4000-8000-000000000002",
+                "sourceRevision": 1,
+                "observedAt": "2026-11-02T11:40:00Z",
+                "expiresAt": "2026-11-02T11:55:00Z",
+                "expired": false,
+                "status": "KNOWN",
+                "conflicted": false
+              },
+              {
+                "kind": "DOCUMENT",
+                "receiptId": "00000000-0000-4000-8000-000000000003",
+                "sourceRevision": 1,
+                "observedAt": "2026-11-02T11:40:00Z",
+                "expiresAt": "2026-11-02T11:55:00Z",
+                "expired": false,
+                "status": "AVAILABLE",
+                "conflicted": false
+              }
+            ],
+            "issues": [
+              {
+                "sequence": 1,
+                "shipmentId": "00000000-0000-4000-8000-000000000001",
+                "reasonCode": "MISSING_PALLET",
+                "owner": "Warehouse",
+                "palletIds": [
+                  "DEMO-P003"
+                ],
+                "firstSeenAt": "2026-11-02T11:40:00Z",
+                "resolvedAt": null
+              }
+            ],
+            "latestProposal": null,
+            "delivery": null
+          }
+        ]
+      },
+      "IssuePage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/Issue"
+            }
+          },
+          "nextAfter": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          }
+        },
+        "required": [
+          "items",
+          "nextAfter"
+        ],
+        "examples": [
+          {
+            "items": [
+              {
+                "sequence": 1,
+                "shipmentId": "00000000-0000-4000-8000-000000000001",
+                "reasonCode": "MISSING_PALLET",
+                "owner": "Warehouse",
+                "palletIds": [
+                  "DEMO-P003"
+                ],
+                "firstSeenAt": "2026-11-02T11:40:00Z",
+                "resolvedAt": null
+              }
+            ],
+            "nextAfter": null
+          }
+        ]
+      },
+      "AuditPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/AuditEvent"
+            }
+          },
+          "nextAfter": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          }
+        },
+        "required": [
+          "items",
+          "nextAfter"
+        ],
+        "examples": [
+          {
+            "items": [
+              {
+                "sequence": 1,
+                "actor": "DEMO-OPERATOR",
+                "kind": "proposal_created",
+                "at": "2026-11-02T11:41:00Z",
+                "correlationId": "00000000-0000-4000-8000-000000000001",
+                "detail": "Version 4"
+              }
+            ],
+            "nextAfter": null
+          }
+        ]
+      },
+      "Live": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "const": "ALIVE",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "examples": [
+          {
+            "status": "ALIVE"
+          }
+        ]
+      },
+      "Ready": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "const": "READY",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "examples": [
+          {
+            "status": "READY"
+          }
+        ]
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "MALFORMED_JSON; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "MALFORMED_JSON",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": false,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "UNAUTHENTICATED; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "UNAUTHENTICATED",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": false,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "FORBIDDEN; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "FORBIDDEN",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": false,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "NOT_FOUND; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "NOT_FOUND",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": false,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "409": {
+        "description": "PAYLOAD_CONFLICT; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "PAYLOAD_CONFLICT",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": false,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "413": {
+        "description": "PAYLOAD_TOO_LARGE; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "PAYLOAD_TOO_LARGE",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": false,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "415": {
+        "description": "UNSUPPORTED_MEDIA_TYPE; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "UNSUPPORTED_MEDIA_TYPE",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": false,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "INVALID_SCHEMA; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "INVALID_SCHEMA",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": false,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "DATABASE_UNAVAILABLE; exact operation-specific codes in api-semantics.md. No raw exception information.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "DATABASE_UNAVAILABLE",
+              "message": "Synthetic request could not be completed.",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": true,
+              "fieldErrors": []
+            }
+          }
+        }
+      },
+      "429": {
+        "description": "Rate limited; bounded Retry-After in seconds",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 60
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "RATE_LIMITED",
+              "message": "Synthetic rate limit reached",
+              "correlationId": "00000000-0000-4000-8000-000000000001",
+              "retryable": true,
+              "fieldErrors": []
+            }
+          }
+        }
+      }
+    }
+  }
+}

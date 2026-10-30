@@ -1,0 +1,191 @@
+{
+  "executedAt": "2026-10-30T22:10:05.082874+00:00",
+  "workingTreeIdentifier": "88d5cbb1b984a8e30896b1ed2549e7fbbeb6b397564fa29567c1cfd6f1bc411a",
+  "gitHeadAtExecution": null,
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.18",
+  "sqlite": "3.54.1",
+  "dependencies": {
+    "fastapi": "0.162.0",
+    "starlette": "1.10.0",
+    "httpx": "0.28.1",
+    "uvicorn": "0.54.0",
+    "jsonschema": "4.26.0",
+    "jinja2": "3.1.6",
+    "pytest": "9.2.0",
+    "playwright": "1.64.1",
+    "ruff": "0.17.3",
+    "mypy": "2.4.1",
+    "setuptools": "84.1.0",
+    "openapi-spec-validator": "0.9.0"
+  },
+  "artifacts": [
+    {
+      "artifact": "pyproject.toml",
+      "sha256": "cb6d6b4d32dcdfdaee02a4084424fcae374b0fb8f16ea12fc0f5202f1a6ec092"
+    },
+    {
+      "artifact": "requirements-dev.lock",
+      "sha256": "c4d0daae88f6c099a5b94f78d5440a65a183ebc78f53ce04131e4d32d6a9de61"
+    },
+    {
+      "artifact": "scripts/verify.py",
+      "sha256": "453a9235fc644cc6e68e7431faef3b47dcc5651bd20ed3df08a22c3a06d0b948"
+    },
+    {
+      "artifact": "src/quayready/__init__.py",
+      "sha256": "07d3bfe13cec363664b2aa42f1f9c0fab983691ab9d00a94e210224de6c394f6"
+    },
+    {
+      "artifact": "src/quayready/api.py",
+      "sha256": "4d7d071ecbd6b6c34058ec0049c0ac3a24543cce9f2e9ddbb20ac131fcf0c5c1"
+    },
+    {
+      "artifact": "src/quayready/cli.py",
+      "sha256": "f128d71162fbcdb9ed09ed8adecd155a99326997670cf065b46e351a9f0588e6"
+    },
+    {
+      "artifact": "src/quayready/common.py",
+      "sha256": "0705dbb18424ef8adc2b4afa81b4692bb9c90334379c4da4bd82260a1165ba1e"
+    },
+    {
+      "artifact": "src/quayready/config.py",
+      "sha256": "aa91435752d3c5367d12d8013dfcdef02203c160ebf265ce971fa0a4c46ec99b"
+    },
+    {
+      "artifact": "src/quayready/contracts/001-app.sql",
+      "sha256": "79f461837107040cf1353945d747c3b2c15dcd71b4524b7fbfa669ef2e4f41a4"
+    },
+    {
+      "artifact": "src/quayready/contracts/001-target.sql",
+      "sha256": "6f951017de281f92902ce7e48d7fcbc6c04a7fa159e8a574bf2b8030654f67a9"
+    },
+    {
+      "artifact": "src/quayready/contracts/openapi.json",
+      "sha256": "4f3fddaef81ef79051131122fc61c55293464e423609c70f8bc7213bb4f8f57a"
+    },
+    {
+      "artifact": "src/quayready/db.py",
+      "sha256": "2abb5f11421ffd0640b125ad99edc37f5b0eb4d3f7d0358c26315a4557a9d146"
+    },
+    {
+      "artifact": "src/quayready/domain.py",
+      "sha256": "79cb6192fa82a4978436e1a9d2b6582fd28820e792dd702c047bdba1ea888a14"
+    },
+    {
+      "artifact": "src/quayready/static/style.css",
+      "sha256": "2525f02d55225cb3ae4b464b5e9e21651d36abe456ebc1a2e07884f55ae87af8"
+    },
+    {
+      "artifact": "src/quayready/static/workbench.js",
+      "sha256": "24ea76a199ed03c41f3b87fb62696ba2cfa89893dce833fba820a29399026d19"
+    },
+    {
+      "artifact": "src/quayready/store.py",
+      "sha256": "be1f736b43472ddc41f5581438f235647a7dabbf0249f391c7d383e13daf148f"
+    },
+    {
+      "artifact": "src/quayready/templates/workbench.html",
+      "sha256": "8d849ad0587ae698db0c734ba0e20db2118ab8a89e6b04f1920460110838b8a4"
+    },
+    {
+      "artifact": "src/quayready/worker.py",
+      "sha256": "4ee311049b1dda3c2a1145bcdd75d780115306a5556146dd1ed7890ca6bb94ed"
+    },
+    {
+      "artifact": "src/quayready.egg-info/PKG-INFO",
+      "sha256": "e690df7b34e2ff3fbd09fb11301c42bebbe0d6386251a61c0696b76740700b8e"
+    },
+    {
+      "artifact": "src/quayready.egg-info/SOURCES.txt",
+      "sha256": "e71bb446a1408a2db499200ae6c7677d758a73691013e016e7cc128c2c888b38"
+    },
+    {
+      "artifact": "src/quayready.egg-info/dependency_links.txt",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "artifact": "src/quayready.egg-info/entry_points.txt",
+      "sha256": "333191e847dec2062d82ed495feb593d0db27333b8a40bc0b5eedc1e74656b03"
+    },
+    {
+      "artifact": "src/quayready.egg-info/requires.txt",
+      "sha256": "b35ce35677dad00b3908a9e0ce95896a76e12a691418fa2c63be1f7738f0eff8"
+    },
+    {
+      "artifact": "src/quayready.egg-info/top_level.txt",
+      "sha256": "4c9c50828b47b1892c9973a09d2718e1facafbffa4d7a3f74634e7ae3f7cc983"
+    },
+    {
+      "artifact": "tests/conftest.py",
+      "sha256": "6d0748bbbf70899e2f1e281fbcc87d869bc1a7f6031528a7d66c6ef7afe46383"
+    },
+    {
+      "artifact": "tests/processes.py",
+      "sha256": "2e5dab91bd732d51c49b4956213fa0de7a4d02e9ce1ac06abc2eb895d0a1479d"
+    },
+    {
+      "artifact": "tests/rule-cases.json",
+      "sha256": "c02dd695b0bd32572272f42ce72f362fa5e63fc4290385072538a1dc702a45c0"
+    },
+    {
+      "artifact": "tests/test_acceptance.py",
+      "sha256": "9c7e1675d9ac0c6cc348b6510dfe9e4032e435bd0af11d4aedda3dbf8395c8b2"
+    },
+    {
+      "artifact": "tests/test_browser.py",
+      "sha256": "a95d77782d5541fe75cfcc0ddd03217e5f81367b182cb775bf19a9b28185709b"
+    },
+    {
+      "artifact": "tests/test_contracts.py",
+      "sha256": "2fbcb0a0ea116858d75c884cafa366a67395acee1d775a752b01f4378a1247a6"
+    },
+    {
+      "artifact": "tests/test_process_recovery.py",
+      "sha256": "d9583f201e027f2f59a5ed4a3c72697d5245f21e07df8905cf46fca284630336"
+    },
+    {
+      "artifact": "tests/test_recovery.py",
+      "sha256": "adaade1040837cc2379444ba50c5a34e829c5830f82fc3664aed233cd8acd6f5"
+    }
+  ],
+  "checks": [
+    {
+      "name": "ruff",
+      "command": "python -m ruff check src tests scripts",
+      "exitCode": 0
+    },
+    {
+      "name": "format",
+      "command": "python -m ruff format --check src tests scripts",
+      "exitCode": 0
+    },
+    {
+      "name": "mypy",
+      "command": "python -m mypy src",
+      "exitCode": 0
+    },
+    {
+      "name": "dependencies",
+      "command": "python -m pip check",
+      "exitCode": 0
+    },
+    {
+      "name": "pytest",
+      "command": "python -m pytest -q --junitxml=evidence/pytest.xml",
+      "exitCode": 0
+    },
+    {
+      "name": "local-secret-canaries",
+      "count": 21,
+      "leakedFiles": [],
+      "exitCode": 0
+    },
+    {
+      "name": "documentation-links",
+      "broken": [],
+      "exitCode": 0
+    }
+  ],
+  "result": "PASS"
+}

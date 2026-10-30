@@ -1,0 +1,157 @@
+"""Reproducible local checks. Never prints credentials or reads private research."""
+
+from __future__ import annotations
+
+import hashlib
+import importlib.metadata
+import json
+import os
+import platform
+import re
+import sqlite3
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def artifacts() -> list[Path]:
+    paths = [ROOT / "pyproject.toml", ROOT / "requirements-dev.lock"]
+    for directory in ("src", "tests", "scripts"):
+        paths.extend(
+            p
+            for p in (ROOT / directory).rglob("*")
+            if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc"
+        )
+    return sorted(paths)
+
+
+def main() -> int:
+    os.chdir(ROOT)
+    destination = ROOT / "evidence"
+    (destination / "checks").mkdir(parents=True, exist_ok=True)
+    fingerprints = [
+        {"artifact": str(p.relative_to(ROOT)), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
+        for p in artifacts()
+    ]
+    fingerprint = hashlib.sha256(json.dumps(fingerprints, sort_keys=True).encode()).hexdigest()
+    head = subprocess.run(["git", "rev-parse", "--verify", "HEAD"], capture_output=True, text=True)
+    report = {
+        "executedAt": datetime.now(timezone.utc).isoformat(),
+        "workingTreeIdentifier": fingerprint,
+        "gitHeadAtExecution": head.stdout.strip() if head.returncode == 0 else None,
+        "platform": platform.platform(),
+        "python": platform.python_version(),
+        "sqlite": sqlite3.sqlite_version,
+        "dependencies": {
+            name: importlib.metadata.version(name)
+            for name in (
+                "fastapi",
+                "starlette",
+                "httpx",
+                "uvicorn",
+                "jsonschema",
+                "jinja2",
+                "pytest",
+                "playwright",
+                "ruff",
+                "mypy",
+                "setuptools",
+                "openapi-spec-validator",
+            )
+        },
+        "artifacts": fingerprints,
+        "checks": [],
+    }
+    commands = [
+        ("ruff", [sys.executable, "-m", "ruff", "check", "src", "tests", "scripts"]),
+        ("format", [sys.executable, "-m", "ruff", "format", "--check", "src", "tests", "scripts"]),
+        ("mypy", [sys.executable, "-m", "mypy", "src"]),
+        ("dependencies", [sys.executable, "-m", "pip", "check"]),
+        ("pytest", [sys.executable, "-m", "pytest", "-q", "--junitxml=evidence/pytest.xml"]),
+    ]
+    success = True
+    for name, command in commands:
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            env={**os.environ, "QUAYREADY_EVIDENCE": "evidence/ui"},
+        )
+        output = result.stdout + result.stderr
+        (destination / "checks" / (name + ".txt")).write_text(output)
+        report["checks"].append(
+            {
+                "name": name,
+                "command": " ".join(["python", *command[1:]]),
+                "exitCode": result.returncode,
+            }
+        )
+        print(f"{name}: exit {result.returncode}")
+        success = success and result.returncode == 0
+    # Materialise this generated artifact before validating links to it on a cold run.
+    (destination / "execution.json").write_text(json.dumps(report, indent=2) + "\n")
+    # Existing local run credentials are canaries: only match them, never emit them.
+    secrets = []
+    for config in (ROOT / ".runs").glob("*/config.json"):
+        data = json.loads(config.read_text())
+        secrets.extend(data.get("principals", {}))
+        if data.get("workerKey"):
+            secrets.append(data["workerKey"])
+    candidates = [
+        p
+        for p in ROOT.rglob("*")
+        if p.is_file()
+        and not any(
+            part
+            in (
+                ".git",
+                ".runs",
+                ".venv",
+                "__pycache__",
+                ".pytest_cache",
+                ".mypy_cache",
+                ".ruff_cache",
+            )
+            or part.endswith(".egg-info")
+            for part in p.relative_to(ROOT).parts
+        )
+    ]
+    leaked = [
+        str(p.relative_to(ROOT))
+        for p in candidates
+        if any(s.encode() in p.read_bytes() for s in secrets)
+    ]
+    broken = []
+    for path in [ROOT / "README.md", *(ROOT / "docs").glob("*.md")]:
+        for target in re.findall(r"\]\(([^)]+)\)", path.read_text()):
+            if (
+                "://" not in target
+                and not target.startswith("#")
+                and not (path.parent / target.split("#")[0]).exists()
+            ):
+                broken.append(f"{path.relative_to(ROOT)}: {target}")
+    report["checks"].extend(
+        [
+            {
+                "name": "local-secret-canaries",
+                "count": len(secrets),
+                "leakedFiles": leaked,
+                "exitCode": int(bool(leaked)),
+            },
+            {"name": "documentation-links", "broken": broken, "exitCode": int(bool(broken))},
+        ]
+    )
+    success = success and not leaked and not broken
+    report["result"] = "PASS" if success else "FAIL"
+    (destination / "execution.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(
+        f"canaries: {len(secrets)} checked; links: {len(broken)} broken; result: {report['result']}"
+    )
+    return 0 if success else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
