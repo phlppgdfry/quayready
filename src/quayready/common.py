@@ -79,6 +79,22 @@ def validate(schema: str, value: Any) -> Any:
     errors = list(Draft202012Validator(root, format_checker=FormatChecker()).iter_errors(value))
     if errors or contains_float(value):
         raise Problem(422, "INVALID_SCHEMA")
+    dates = (
+        [value]
+        if schema == "Instant"
+        else [
+            value[k]
+            for k in ("observedAt", "cutoffAt", "acceptedAt")
+            if isinstance(value, dict) and k in value
+        ]
+    )
+    try:
+        if any(instant(v) < 0 for v in dates):
+            raise ValueError("Pre-epoch timestamps are outside the persisted contract")
+    except (ValueError, OverflowError, OSError):
+        raise Problem(
+            422, "INVALID_SCHEMA", "Timestamp is outside the supported UTC range"
+        ) from None
     return value
 
 

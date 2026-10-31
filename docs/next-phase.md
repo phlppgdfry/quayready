@@ -1,5 +1,7 @@
 # Engineering handoff after E1
 
+> This is the original E1-to-E2 handoff, retained for traceability. The authorised RC implements these local engineering/product tasks; hosted CI, publication and human mastery remain separate gates. See [current release verification](release-verification.md).
+
 [Evidence](verification.md) · [Design](implementation.md) · [Learning](learning.md)
 
 E1 implements the closed synthetic three-pallet workflow. Do not add features to hide a red foundation. Before E2, independently reproduce the cold start and the four personal exercises; that human validation remains open.

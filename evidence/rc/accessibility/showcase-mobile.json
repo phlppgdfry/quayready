@@ -1,0 +1,17 @@
+{
+  "surface": "showcase-mobile",
+  "url": "http://127.0.0.1:54967/quayready/",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "engine": {
+    "name": "axe-core",
+    "version": "4.11.0"
+  },
+  "violations": [],
+  "incomplete": [
+    "color-contrast"
+  ],
+  "limitations": "Automated subset; no screen-reader user test or WCAG certification"
+}

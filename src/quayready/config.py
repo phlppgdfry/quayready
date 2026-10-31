@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from .common import instant, wall_ms
+
+# The independent mock credential/seed is deliberately bound to one demo site.
+TARGET_SITE = "DEMO-ZEE"
 
 
 @dataclass(frozen=True)
@@ -20,8 +23,8 @@ class Principal:
 @dataclass
 class Settings:
     run_dir: Path
-    principals: dict[str, Principal]
-    worker_key: str
+    principals: dict[str, Principal] = field(repr=False)
+    worker_key: str = field(repr=False)
     domain_time: int | None = None
     app_port: int = 8080
     target_port: int = 8081
@@ -44,7 +47,8 @@ class Settings:
         if self.worker_key in self.principals:
             raise ValueError("Worker and caller credentials must differ")
         if self.app_port == self.target_port or not all(
-            1024 <= p <= 65535 for p in (self.app_port, self.target_port)
+            isinstance(p, int) and not isinstance(p, bool) and 1024 <= p <= 65535
+            for p in (self.app_port, self.target_port)
         ):
             raise ValueError("Two separate local unprivileged ports required")
         if self.target_fault not in ("none", "drop-after-commit", "unavailable"):

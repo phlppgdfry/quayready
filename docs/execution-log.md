@@ -1,0 +1,11 @@
+# Local release execution log
+
+- Baseline: clean local/remote `implementation/e1` at b664034; 39 tests and original warning reproduced. Dedicated local work branch created; E1 evidence preserved.
+- Engineering: real hostile HTTP probes, two worker processes, result-COMMIT failure, fenced recovery, explicit GET-only manual reconciliation and target migration 002. Engineering gate passed 73 tests before visual work.
+- Security/contracts: stable-subject/site tests, session expiry/pruning, secret-safe repr, strict ranges, route/media/version cases, automatic response-schema validation and full declared-status matrix. Warning resolved via supported httpx2, not a framework upgrade.
+- Product: coherent original design tokens, readable state separation, UNKNOWN count correction, historical approval labels, role-aware review and manual recovery, responsive audit/workbench. Real browser flows and axe checks executed.
+- Static showcase: vanilla JS/CSS with an allowlisted static exporter; eleven-step simulation, seven failure explanations, eight-component explorer, no-JS fallback and repository-subpath tests. No backend or credentials in the public bundle.
+- Assets: genuine app captures; original XML-validated diagrams/social card; approximately 112-second captioned real browser video, compressed without changing content. No fabricated screenshot, benchmark or customer evidence.
+- Developer/release: pinned Python/npm tools; fresh RC environment, package build, source integrity checks, read-only SHA-pinned Actions validated locally; README, security, changelog, notes, case study and mastery rubric prepared.
+- Review: corrected total deadlines, closed-response handling, numeric/time boundaries, atomic simulation transitions, mobile readability and stale export safety and a reproduced outbound site-binding defect. Mismatched target scope now fails closed before HTTP. Final gate results are the generated [execution record](../evidence/rc/execution.json), [JUnit](../evidence/rc/pytest.xml) and [response matrix](../evidence/rc/response-coverage.json).
+- Publication: no push, merge, visibility change, public repository, Pages enablement, deployment or Release. Hosted CI and human mastery/second-person gates remain unverified. [Owner decisions](publication.md) are concrete and separate.

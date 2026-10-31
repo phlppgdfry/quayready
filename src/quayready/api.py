@@ -15,9 +15,10 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from starlette.exceptions import HTTPException
 
 from .common import SPEC, Json, Problem, digest, iso, parse_json, uid, validate, wall_ms
-from .config import Principal, Settings, load_settings
+from .config import TARGET_SITE, Principal, Settings, load_settings
 from .db import Database
 from .store import Store
 
@@ -71,6 +72,15 @@ def create_app(settings: Settings | None = None, target: bool = False) -> FastAP
     @app.exception_handler(sqlite3.DatabaseError)
     async def database_handler(request: Request, exc: sqlite3.DatabaseError) -> JSONResponse:
         return JSONResponse(Problem(503, "DATABASE_UNAVAILABLE").body(), 503)
+
+    @app.exception_handler(HTTPException)
+    async def route_handler(request: Request, exc: HTTPException) -> JSONResponse:
+        return JSONResponse(
+            Problem(
+                exc.status_code, "NOT_FOUND" if exc.status_code == 404 else "INVALID_SCHEMA"
+            ).body(),
+            exc.status_code,
+        )
 
     @app.middleware("http")
     async def boundary(request: Request, call_next: Any) -> Response:
@@ -151,7 +161,7 @@ def create_app(settings: Settings | None = None, target: bool = False) -> FastAP
             if not rawafter.isdigit() or not rawlimit.isdigit():
                 raise ValueError()
             after, limit = int(rawafter), int(rawlimit)
-            if after < 0 or not 1 <= limit <= 100:
+            if not 0 <= after <= 9223372036854775807 or not 1 <= limit <= 100:
                 raise ValueError()
             return after, limit
         except ValueError:
@@ -266,6 +276,9 @@ def create_app(settings: Settings | None = None, target: bool = False) -> FastAP
             raise Problem(403, "ORIGIN_REJECTED")
         now = time.monotonic()
         attempts[:] = [x for x in attempts if now - x < 60]
+        for key, session in list(sessions.items()):
+            if wall_ms() >= session[2]:
+                sessions.pop(key, None)
         if len(attempts) >= 5:
             raise Problem(429, "RATE_LIMITED")
         attempts.append(now)
@@ -347,6 +360,15 @@ def create_app(settings: Settings | None = None, target: bool = False) -> FastAP
             human(request, ("operator", "reviewer", "auditor")), identifier(dispatchId)
         )
 
+    @app.post("/v1/deliveries/{dispatchId}/reconcile")
+    async def reconcile_delivery(dispatchId: str, request: Request) -> Json:
+        from .worker import Worker
+
+        p = human(request, ("reviewer",), True)
+        await body(request, "ReconcileRequest")
+        # The bounded blocking network lookup runs outside the event loop and all DB writes.
+        return await asyncio.to_thread(Worker(store).reconcile, p, identifier(dispatchId))
+
     @app.get("/v1/issues")
     def issues(request: Request) -> Json:
         p = human(request, ("operator", "reviewer"))
@@ -378,6 +400,7 @@ def create_app(settings: Settings | None = None, target: bool = False) -> FastAP
             p = session[0]
         ships = []
         events = []
+        decisions = {}
         if p:
             with store.db.transaction(False) as c:
                 ids = [
@@ -388,6 +411,14 @@ def create_app(settings: Settings | None = None, target: bool = False) -> FastAP
                     )
                 ]
             ships = [store.view(p, sid) for sid in ids]
+            with store.db.transaction(False) as c:
+                decisions = {
+                    r["shipment_id"]: dict(r)
+                    for r in c.execute(
+                        "SELECT * FROM review_decisions WHERE site_id=? ORDER BY decided_at_ms",
+                        (p.site,),
+                    )
+                }
             if ships and any(r in p.roles for r in ("reviewer", "auditor")):
                 events = store.page(p, "audit", 0, 100, ships[0]["shipmentId"])["items"]
         html = templates.get_template("workbench.html").render(
@@ -395,6 +426,8 @@ def create_app(settings: Settings | None = None, target: bool = False) -> FastAP
             csrf=session[1] if session and p else "",
             shipments=ships,
             events=events,
+            decisions=decisions,
+            target_site=TARGET_SITE,
             now=iso(cfg.now()),
             fixed=cfg.domain_time is not None,
         )

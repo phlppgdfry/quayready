@@ -1,0 +1,8 @@
+{
+  "command": "actionlint .github/workflows/verify.yml",
+  "exitCode": 0,
+  "hostedCI": "NOT_RUN",
+  "permissions": "contents:read; no deployment",
+  "upstreamSHAs": "read-only checked against actions/checkout, setup-python, setup-node and upload-artifact tags",
+  "runtimeManifest": "Python 3.13.18 Linux x64 available in official actions/python-versions manifest"
+}

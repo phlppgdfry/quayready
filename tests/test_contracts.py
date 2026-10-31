@@ -12,6 +12,8 @@ pytestmark = pytest.mark.contract
 
 
 def response_contract(response, path, method):
+    from conftest import OBSERVED
+
     operation = SPEC["paths"][path][method]
     assert str(response.status_code) in operation["responses"], (
         path,
@@ -26,6 +28,7 @@ def response_contract(response, path, method):
         Draft202012Validator(
             {**schema, "components": SPEC["components"]}, format_checker=FormatChecker()
         ).validate(response.json())
+    OBSERVED.add((path, method, str(response.status_code)))
 
 
 def test_T20_openapi_standard_and_complete_workflow(client, store, cfg):

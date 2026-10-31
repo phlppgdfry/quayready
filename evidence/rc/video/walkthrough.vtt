@@ -1,0 +1,29 @@
+WEBVTT
+
+1
+00:00:00.249 --> 00:00:14.252
+QuayReady: a real local synthetic integration lab. Three pallets expected; P003 has no warehouse evidence.
+
+2
+00:00:14.314 --> 00:00:26.317
+A higher complete warehouse snapshot corrects the discrepancy. Fresh evidence makes version four eligible for review.
+
+3
+00:00:26.451 --> 00:00:36.453
+The requesting subject cannot approve. This is a server-side rejection, even when that identity has both roles.
+
+4
+00:00:36.701 --> 00:00:50.704
+A different subject approves evidence v4. Approval and immutable outbox commit together. Queued is not yet delivered.
+
+5
+00:00:51.121 --> 00:01:07.123
+The independent target committed, then deliberately lost its response. The app reports uncertainty rather than success.
+
+6
+00:01:07.527 --> 00:01:23.529
+A new worker process looks up the same dispatch identifier. Its matching receipt confirms the existing target effect.
+
+7
+00:01:23.545 --> 00:01:35.547
+The audit connects source, operator, reviewer and delivery. Real HTTP, separate databases, one effect. No physical departure authorisation.
