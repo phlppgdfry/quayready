@@ -1,6 +1,6 @@
 # Verification evidence
 
-This report describes real local execution. The interactive website is a browser-only educational simulation and does not run these tests. At local final sign-off, hosted CI is NOT EXECUTED. A later hosted build records its own job origin and run reference; a recorded job does not imply overall workflow or deployment success.
+This report describes real local execution. The interactive website is a browser-only educational simulation and does not run these tests. At the historical local final sign-off, hosted CI was NOT EXECUTED. Subsequently, Ubuntu run 41359218094 on source 2117b1330b48922c5cae208929cef60f65be7009 passed 196 tests and all mandatory workflow steps. The GitHub run and artifacts require repository access while source is private. A later hosted build records its own job origin and run reference; a recorded job does not imply overall workflow or deployment success.
 
 ## What is tested
 

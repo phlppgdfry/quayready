@@ -16,6 +16,12 @@ Final audit: full clean-wheel reproduction, full-history safety review, disabled
 - Added genuine captures, a captioned local walkthrough, original SVG diagrams/social assets and accessibility/performance observations.
 - Prepared pinned, least-privilege verification Actions; no deployment, publication or hosted-CI success is claimed.
 
+### Private hosted validation handoff
+
+- Publish the authorised private review branch and draft PR; record actual passing Ubuntu checks without replacing historical local evidence.
+- Preserve the allowlisted `.nojekyll` marker in the downloadable static artifact; default hidden-file exclusion was found by inspecting the hosted download. No public deployment is enabled.
+
+
 ## 0.1.0 — E1 baseline `b664034`
 
 Closed synthetic three-pallet workflow, version-bound independent review, transactional outbox and independent HTTP target. 39 local tests passed. Historical E1 artifacts remain under `evidence/`.

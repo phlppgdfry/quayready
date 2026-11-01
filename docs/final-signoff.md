@@ -1,6 +1,6 @@
 # Final professional portfolio sign-off
 
-**PORTFOLIO RELEASE READY** for the defined synthetic, locally reproducible portfolio scope. This is an assistant-performed engineering/product audit, not an independent human certification or production approval. Publication is deliberately not executed.
+**PORTFOLIO RELEASE READY** for the defined synthetic, locally reproducible portfolio scope. This is an assistant-performed engineering/product audit, not an independent human certification or production approval. Public publication is deliberately not executed. The subsequent authorised private push, draft PR and successful hosted verification are recorded in [hosted validation](hosted-validation.md).
 
 ## Release decision and version
 
@@ -35,7 +35,7 @@ Actual captures, original diagrams, desktop/laptop/tablet/mobile flows, captions
 
 Complete: functioning application, static showcase/simulation, genuine visual/video assets, source/docs/contracts/tests, case study, developer/reproduction instructions, pinned verification CI, disabled exact deployment workflow, changelog/release notes and [learning/interview package](interview-package.md).
 
-Required owner actions: approve push of the final audit branch; inspect actual hosted CI; separately approve the public static URL, Pages enablement/protected environment and deployment; separately approve a tag/Release. Keep both source and strategy private unless a separate source-visibility decision is explicitly made. See [publication checklist](publication.md). Hosted CI is **NOT EXECUTED** because no push is authorised here.
+Private branch push, draft PR and actual hosted verification are now complete. Required owner actions: review the latest PR checks; separately approve the public static URL, Pages enablement/protected environment and deployment; separately approve a tag/Release. Keep both source and strategy private unless a separate source-visibility decision is explicitly made. See [publication checklist](publication.md). The original local manifest retains its historical **NOT EXECUTED** hosted field; the later hosted record is separate and linked above.
 
 Owner learning: complete the five unaided exercises and two-/eight-minute explanations, record AI help and have another person observe. No personal mastery is marked passed. Assistant-operated clean installation does not replace independent-person reproduction.
 

@@ -54,4 +54,5 @@ jobs:
         with:
           name: quayready-static-preview
           path: .runs/site/quayready/
+          include-hidden-files: true # Preserve the allowlisted .nojekyll marker, not run credentials.
           retention-days: 14

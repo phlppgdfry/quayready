@@ -10,7 +10,7 @@ This is an independent, AI-assisted portfolio and learning project with syntheti
 
 ![Genuine release-candidate workbench capture](evidence/rc/ui/hero.jpg)
 
-**Local release candidate `0.2.0rc1`.** Source remains private. Nothing has been deployed or published; hosted CI is not yet verified. [Final sign-off](docs/final-signoff.md) · [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
+**Private GitHub release candidate `0.2.0rc1`.** Source remains private. The review branch and draft PR are published privately; [hosted Ubuntu CI passes](docs/hosted-validation.md). No website, package or Release is published. [Final sign-off](docs/final-signoff.md) · [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
 
 ## Explore in a browser
 

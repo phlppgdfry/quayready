@@ -32,7 +32,7 @@ Canonical event hashes distinguish identical replay from changed content. Source
 
 ## Verified results
 
-The E1 baseline passed 39 local tests. The first E2 engineering checkpoint passed 73 tests, including hostile response deadlines, two overlapping worker processes, result-COMMIT failure, cross-site boundaries and terminal reconciliation. The audited release baseline passed **194 local tests** and exercised **108/108 declared HTTP response combinations** with schema validation. [The final audit](final-signoff.md) links the fresh-install and execution manifests, exact commands and platform. These are technical outcomes, not measured operational savings. Hosted CI and independent owner assessment are distinct gates.
+The E1 baseline passed 39 local tests. The first E2 engineering checkpoint passed 73 tests, including hostile response deadlines, two overlapping worker processes, result-COMMIT failure, cross-site boundaries and terminal reconciliation. The audited release baseline passed **194 local tests** and exercised **108/108 declared HTTP response combinations** with schema validation. [The final audit](final-signoff.md) links the fresh-install and execution manifests, exact commands and platform. The subsequent final suite passed **196 tests**, locally and in actual Ubuntu hosted CI, retaining **108/108** validated response combinations. These are technical outcomes, not measured operational savings. Independent owner assessment remains a separate gate.
 
 ## Limitations and reflection
 

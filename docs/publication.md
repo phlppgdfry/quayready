@@ -1,6 +1,6 @@
 # Publication decision — nothing deployed
 
-The private application and strategy repositories remain private. No push, merge, Pages setting, public repository or GitHub Release is authorised by this local consolidation assignment. The working branch is a local release candidate; an informed owner decision is required for each publication action below.
+The private application and strategy repositories remain private. The owner authorised pushing only `work/ultimate-showcase-release`, creating a draft PR and validating hosted CI. These private review steps are complete; see [hosted validation](hosted-validation.md). Merge, visibility change, Pages enablement, public repository creation, deployment, tag and GitHub Release remain unauthorised. Historical local evidence is preserved.
 
 ## Availability checked, not enabled
 
@@ -12,7 +12,7 @@ An optional separate public static repository is also possible, but is not neces
 
 ## Decision sequence and exact scope
 
-1. **Approve pushing the existing local release branch only:** `git push -u origin release/final-portfolio-signoff`. This would trigger the prepared read-only verification workflow; it does not publish a site or Release. Inspect the actual run and fix any Linux/hosted compatibility issue before proceeding. Hosted success is currently UNVERIFIED.
+1. **Private review handoff completed:** `work/ultimate-showcase-release` is pushed, [draft PR #1](https://github.com/phlppgdfry/quayready/pull/1) targets `implementation/e1`, and [the recorded Ubuntu run](https://github.com/phlppgdfry/quayready/actions/runs/41359218094) passes. Review the latest head checks in the PR before approving any merge. No default-branch push or merge was performed.
 2. **Review source access independently.** Keep `quayready` private unless the owner explicitly authorises a visibility change. Do not add a public GitHub button to the showcase until source is public and the URL has been verified.
 3. **Approve public static exposure and its chosen URL.** Recommended existing-repository project path, if approved: `https://phlppgdfry.github.io/quayready/`. This is a proposed address, not a deployed link. Run `python scripts/build_showcase.py --public-url APPROVED_HTTPS_URL` to generate correct absolute canonical/social metadata. Review the output manifest, video, public evidence and absence of research/credentials.
 4. **Prepare deployment only after that approval.** In repository Settings → Pages choose GitHub Actions; add a separately reviewed workflow that uploads only `.runs/site/quayready/` and deploys through a protected `github-pages` environment with the minimum `pages:write` and `id-token:write` permissions. The existing verify workflow deliberately has no such permissions or deployment job. Restrict the environment to the approved release branch. Require owner-initiated manual dispatch, including reruns; this is an owner action, not independent approval. Run and verify the actual public path, asset URLs, refresh navigation, captions and mobile controls before advertising it.
