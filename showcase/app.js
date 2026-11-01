@@ -271,7 +271,9 @@ fetch("assets/verification.json")
       document.querySelector("[data-test-count]").textContent =
         `${data.tests.passed} passed`;
     byId("verification-date").textContent =
-      `Local verification snapshot: ${data.executedAt}. Hosted CI: not run on this unpublished branch.`;
+      data.hostedCI === "NOT_RUN"
+        ? `Local verification snapshot: ${data.executedAt}. Hosted CI: not executed for this snapshot.`
+        : `GitHub Actions job snapshot: ${data.executedAt}. A recorded job does not establish the overall workflow or deployment outcome.`;
   })
   .catch(() => {
     byId("verification-date").textContent =

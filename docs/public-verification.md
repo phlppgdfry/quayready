@@ -1,6 +1,6 @@
 # Verification evidence
 
-This report describes real local execution. The interactive website is a browser-only educational simulation and does not run these tests. Hosted CI has not run on the unpublished release branch.
+This report describes real local execution. The interactive website is a browser-only educational simulation and does not run these tests. At local final sign-off, hosted CI is NOT EXECUTED. A later hosted build records its own job origin and run reference; a recorded job does not imply overall workflow or deployment success.
 
 ## What is tested
 

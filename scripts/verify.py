@@ -17,6 +17,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def execution_context() -> dict[str, str | None]:
+    hosted = os.getenv("GITHUB_ACTIONS") == "true"
+    repository = os.getenv("GITHUB_REPOSITORY", "")
+    run = os.getenv("GITHUB_RUN_ID", "")
+    valid = bool(
+        re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9][A-Za-z0-9_.-]*", repository)
+    ) and bool(re.fullmatch(r"[0-9]{1,20}", run))
+    return {
+        "executionEnvironment": "GITHUB_ACTIONS" if hosted else "LOCAL",
+        "hostedRunUrl": f"https://github.com/{repository}/actions/runs/{run}"
+        if hosted and valid
+        else None,
+    }
+
+
 def artifacts() -> list[Path]:
     paths = [
         ROOT / name
@@ -56,6 +71,7 @@ def main() -> int:
     fingerprint = hashlib.sha256(json.dumps(fingerprints, sort_keys=True).encode()).hexdigest()
     head = subprocess.run(["git", "rev-parse", "--verify", "HEAD"], capture_output=True, text=True)
     report = {
+        **execution_context(),
         "executedAt": datetime.now(timezone.utc).isoformat(),
         "workingTreeIdentifier": fingerprint,
         "gitHeadAtExecution": head.stdout.strip() if head.returncode == 0 else None,

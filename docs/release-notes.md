@@ -9,3 +9,5 @@ The static demo is explicitly a simulation. Genuine application captures and a r
 No production deployment, company affiliation, real vendor integration, physical departure authorisation, measured ROI, professional penetration test or personal mastery is claimed. The application source remains private. Release publication requires the owner's separate informed approval and an actual hosted CI run.
 
 Reproduce using the [README](../README.md). Preview the static export under its repository subpath. Preserve old runs; reset means a new synthetic directory. Known limits and open human gates are in the verification report.
+
+Final audit retains 0.2.0rc1: the project is complete for its local portfolio scope; hosted execution and publication are not performed, so v1.0.0 is not asserted. See [final sign-off](final-signoff.md) and [interview package](interview-package.md). The Pages template is intentionally disabled.

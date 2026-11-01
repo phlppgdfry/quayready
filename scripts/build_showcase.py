@@ -27,6 +27,7 @@ LINKS = {
     "case-study.md": "case-study.html",
     "release-verification.md": "evidence.html",
     "demo-transcript.md": "transcript.html",
+    "final-signoff.md": "evidence.html",
 }
 
 
@@ -90,7 +91,8 @@ def snapshot() -> dict:
         }
     )
     return {
-        "kind": "local execution, not simulation or hosted CI",
+        "kind": "recorded verification execution, separate from simulation; inspect executionEnvironment",
+        "executionEnvironment": recorded.get("executionEnvironment", "LOCAL"),
         "executedAt": recorded["executedAt"],
         "result": recorded["result"],
         "python": recorded["python"],
@@ -104,7 +106,10 @@ def snapshot() -> dict:
         else None,
         "tests": tests,
         "workingTreeIdentifier": recorded.get("workingTreeIdentifier"),
-        "hostedCI": "NOT_RUN",
+        "hostedCI": "JOB_CHECKS_RECORDED_SEE_RUN"
+        if recorded.get("executionEnvironment") == "GITHUB_ACTIONS"
+        else "NOT_RUN",
+        "hostedRunUrl": recorded.get("hostedRunUrl"),
         "personalMastery": "UNVERIFIED",
     }
 

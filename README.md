@@ -10,7 +10,7 @@ This is an independent, AI-assisted portfolio and learning project with syntheti
 
 ![Genuine release-candidate workbench capture](evidence/rc/ui/hero.jpg)
 
-**Local release candidate `0.2.0rc1`.** Source remains private. Nothing has been deployed or published; hosted CI is not yet verified. [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
+**Local release candidate `0.2.0rc1`.** Source remains private. Nothing has been deployed or published; hosted CI is not yet verified. [Final sign-off](docs/final-signoff.md) · [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
 
 ## Explore in a browser
 
@@ -158,7 +158,7 @@ SQLite remains single-writer. Local administrators can alter files and audit pro
 | System context, data flow, schema and recovery | [Architecture](docs/architecture.md) · [Implementation](docs/implementation.md) |
 | HTTP contracts | [OpenAPI 3.1.1](src/quayready/contracts/openapi.json) |
 | Verification, security and honest limits | [Release evidence](docs/release-verification.md) · [SECURITY](SECURITY.md) |
-| Demo and interview explanation | [Transcript](docs/demo-transcript.md) · [Mastery exercises](docs/learning.md) |
+| Demo and interview explanation | [Transcript](docs/demo-transcript.md) · [Mastery exercises](docs/learning.md) · [Interview package](docs/interview-package.md) |
 | Product identity and accessibility | [Design system](docs/design-system.md) |
 | Publication decision and repository metadata | [Publication checklist](docs/publication.md) |
 | Version changes | [Changelog](CHANGELOG.md) · [Release notes](docs/release-notes.md) |

@@ -2,6 +2,8 @@
 
 ## 0.2.0rc1 — local release candidate, not published
 
+Final audit: full clean-wheel reproduction, full-history safety review, disabled exact Pages template, employer case study and concise interview/sign-off package. Application architecture preserved.
+
 - Hardened total HTTP deadlines against delayed/trickled headers and bodies; correct complete-response handling when a connection closes.
 - Added two-process worker overlap, fenced-result, actual result-COMMIT failure, terminal uncertainty and contract/security negative tests.
 - Added reviewer-authorised, generation-fenced GET-only manual reconciliation. No force-send, budget reset or new dispatch identity.
