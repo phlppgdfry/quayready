@@ -1,0 +1,174 @@
+{
+  "verdict": "PORTFOLIO RELEASE READY",
+  "scope": "Independent synthetic local portfolio release; source remains private",
+  "version": "0.2.0rc1",
+  "generatedAt": "2026-11-01T22:48:17.064351+00:00",
+  "sourceCommit": "f68713eca6a52e91a2d2ec682853ed4fc16f3a32",
+  "testedInputFingerprint": "43617565290712194d5fa87d38d4be920c954a39a4e9a328800b5aa1a076e8e4",
+  "sourceInputsChangedAfterVerification": [],
+  "runtime": {
+    "python": "3.13.18",
+    "sqlite": "3.54.1",
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "dependencies": {
+      "fastapi": "0.162.0",
+      "starlette": "1.10.0",
+      "httpx": "0.28.1",
+      "httpx2": "2.16.0",
+      "uvicorn": "0.54.0",
+      "jsonschema": "4.26.0",
+      "jinja2": "3.1.6",
+      "pytest": "9.2.0",
+      "playwright": "1.64.1",
+      "ruff": "0.17.3",
+      "mypy": "2.4.1",
+      "setuptools": "84.1.0",
+      "openapi-spec-validator": "0.9.0"
+    }
+  },
+  "localVerification": {
+    "status": "LOCAL PASS",
+    "tests": {
+      "tests": 196,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "commands": [
+      {
+        "name": "ruff",
+        "command": "python -m ruff check src tests scripts",
+        "exitCode": 0
+      },
+      {
+        "name": "format",
+        "command": "python -m ruff format --check src tests scripts",
+        "exitCode": 0
+      },
+      {
+        "name": "mypy",
+        "command": "python -m mypy src",
+        "exitCode": 0
+      },
+      {
+        "name": "dependencies",
+        "command": "python -m pip check",
+        "exitCode": 0
+      },
+      {
+        "name": "frontend-format",
+        "command": "npm run check",
+        "exitCode": 0
+      },
+      {
+        "name": "bandit",
+        "command": "python -m bandit -r src -q",
+        "exitCode": 0
+      },
+      {
+        "name": "package",
+        "command": "python -m build --no-isolation",
+        "exitCode": 0
+      },
+      {
+        "name": "pytest",
+        "command": "python -m pytest -q --junitxml=evidence/rc/pytest.xml",
+        "exitCode": 0
+      },
+      {
+        "name": "showcase",
+        "command": "python scripts/build_showcase.py",
+        "exitCode": 0
+      },
+      {
+        "name": "local-secret-canaries",
+        "count": 56,
+        "leakedFiles": [],
+        "exitCode": 0
+      },
+      {
+        "name": "documentation-links",
+        "broken": [],
+        "exitCode": 0
+      },
+      {
+        "name": "tested-input-integrity",
+        "changed": [],
+        "exitCode": 0
+      },
+      {
+        "name": "final-evidence-export",
+        "command": "python scripts/build_showcase.py",
+        "exitCode": 0
+      }
+    ]
+  },
+  "cleanWheelReproduction": {
+    "status": "LOCAL PASS",
+    "tests": {
+      "tests": 196,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "record": "clean-reproduction.json"
+  },
+  "contractResponses": {
+    "kind": "declared operation/method/status combinations actually schema-validated in execution; not code coverage",
+    "declared": 108,
+    "observed": 108,
+    "missing": [],
+    "fullGate": true
+  },
+  "security": {
+    "pythonKnownAdvisories": 0,
+    "npmKnownAdvisories": 0,
+    "scans": [
+      {
+        "name": "history",
+        "command": "gitleaks git --log-opts=--all --redact --no-banner",
+        "exitCode": 0
+      },
+      {
+        "name": "workflow",
+        "command": "actionlint .github/workflows/verify.yml .github/workflows/pages.yml.disabled",
+        "exitCode": 0
+      }
+    ],
+    "historyCommits": [
+      "f68713eca6a52e91a2d2ec682853ed4fc16f3a32",
+      "94ab609c9338e4ccd9735aabca97d0243986ad72",
+      "2a9460948a84b9c4c283b0aa25d0eec2ec0c5e2c",
+      "b6640349710ca118d55f7c5b8cb580fff9fb4f2e"
+    ],
+    "personalMetadata": "Git author and local-machine metadata retained in private source history; excluded from static export; owner consent required before source publicity"
+  },
+  "browser": {
+    "engine": "Playwright Chromium with axe-core; actual reports under evidence/rc/accessibility and evidence/final-release/accessibility",
+    "viewports": [
+      "1440x1000",
+      "1280x800",
+      "768x1024",
+      "390x844"
+    ],
+    "screenshots": "evidence/rc/ui and evidence/rc/showcase",
+    "recording": "evidence/rc/video/walkthrough.webm"
+  },
+  "siteBuild": {
+    "output": ".runs/site/quayready",
+    "files": 21,
+    "bytes": 1791526,
+    "backendDependencies": false,
+    "links": "PASS",
+    "svgXML": "PASS",
+    "publication": "NOT_DEPLOYED"
+  },
+  "hostedCI": "NOT EXECUTED",
+  "publication": "NOT EXECUTED; no push, merge, Pages enablement, deployment, visibility change or Release",
+  "limitations": [
+    "assistant-operated same-Mac reproduction, not independent-human or Linux/hosted validation",
+    "synthetic/mock integrations, no production/ROI/compliance claim",
+    "personal mastery and screen-reader/Safari/Firefox user testing not observed"
+  ],
+  "closure": "No further feature development justified; obtain owner publication approvals and complete independent exercises"
+}

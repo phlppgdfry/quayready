@@ -56,6 +56,7 @@ copying tests/test_acceptance.py -> quayready-0.2.0rc1/tests
 copying tests/test_browser.py -> quayready-0.2.0rc1/tests
 copying tests/test_contracts.py -> quayready-0.2.0rc1/tests
 copying tests/test_design_tokens.py -> quayready-0.2.0rc1/tests
+copying tests/test_execution_context.py -> quayready-0.2.0rc1/tests
 copying tests/test_hardening.py -> quayready-0.2.0rc1/tests
 copying tests/test_process_recovery.py -> quayready-0.2.0rc1/tests
 copying tests/test_recovery.py -> quayready-0.2.0rc1/tests
@@ -136,7 +137,7 @@ running install_egg_info
 Copying src/quayready.egg-info to build/bdist.macosx-15.0-arm64/wheel/./quayready-0.2.0rc1-py3.13.egg-info
 running install_scripts
 creating build/bdist.macosx-15.0-arm64/wheel/quayready-0.2.0rc1.dist-info/WHEEL
-creating '/Users/philippegodfroy/quayready/dist/.tmp-x033699c/quayready-0.2.0rc1-py3-none-any.whl' and adding 'build/bdist.macosx-15.0-arm64/wheel' to it
+creating '/Users/philippegodfroy/quayready/dist/.tmp-tuwd0q9z/quayready-0.2.0rc1-py3-none-any.whl' and adding 'build/bdist.macosx-15.0-arm64/wheel' to it
 adding 'quayready/__init__.py'
 adding 'quayready/api.py'
 adding 'quayready/cli.py'

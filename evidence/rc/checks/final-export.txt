@@ -1,7 +1,7 @@
 {
   "output": ".runs/site/quayready",
   "files": 21,
-  "bytes": 1789622,
+  "bytes": 1791526,
   "backendDependencies": false,
   "links": "PASS",
   "svgXML": "PASS",

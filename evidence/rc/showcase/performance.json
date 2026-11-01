@@ -1,7 +1,7 @@
 {
   "kind": "local Chromium observation, not a benchmark or Lighthouse score",
-  "navigationMs": 134.30000001192093,
-  "transferBytes": 139759,
+  "navigationMs": 137.30000001192093,
+  "transferBytes": 140034,
   "scripts": 1,
   "cacheState": "fresh browser context initial navigation"
 }

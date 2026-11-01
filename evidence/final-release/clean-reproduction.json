@@ -1,0 +1,65 @@
+{
+  "status": "LOCAL PASS",
+  "executedAt": "2026-11-01T22:31:41.081567+00:00",
+  "sourceCommit": "2a9460948a84b9c4c283b0aa25d0eec2ec0c5e2c",
+  "sourceWorkingTree": "See final execution fingerprint; audit changes may be uncommitted at execution",
+  "isolatedRun": ".runs/final-cold-start-1793572236973557000",
+  "steps": [
+    {
+      "name": "create-venv",
+      "command": "/Users/philippegodfroy/quayready/.venv/bin/python -m venv /Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv",
+      "exitCode": 0
+    },
+    {
+      "name": "install-lock",
+      "command": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv/bin/python -m pip install -r requirements-dev.lock",
+      "exitCode": 0
+    },
+    {
+      "name": "dependency-integrity",
+      "command": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv/bin/python -m pip check",
+      "exitCode": 0
+    },
+    {
+      "name": "build-wheel",
+      "command": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv/bin/python -m build --wheel --no-isolation --outdir /Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/wheel",
+      "exitCode": 0
+    },
+    {
+      "name": "install-wheel",
+      "command": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv/bin/python -m pip install --no-index --no-deps /Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/wheel/quayready-0.2.0rc1-py3-none-any.whl",
+      "exitCode": 0
+    },
+    {
+      "name": "verify-wheel-import",
+      "command": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv/bin/python -c import json,quayready,sys; from pathlib import Path; p=Path(quayready.__file__).resolve(); assert p.is_relative_to(Path(sys.prefix)); print(json.dumps({'module':str(p),'prefix':sys.prefix}))",
+      "exitCode": 0
+    },
+    {
+      "name": "frontend-lock",
+      "command": "npm ci --ignore-scripts",
+      "exitCode": 0
+    },
+    {
+      "name": "complete-cold-suite",
+      "command": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv/bin/python -m pytest -q --junitxml=evidence/final-release/cold-start.xml",
+      "exitCode": 0
+    },
+    {
+      "name": "complete-cold-suite-final-audit",
+      "command": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv/bin/python -m pytest -q --junitxml=evidence/final-release/cold-start.xml",
+      "exitCode": 0
+    }
+  ],
+  "wheelSha256": "5b937e9b70300d1f76f570a5f5565420e17c6c2858fb6f5cf15a59c867042517",
+  "wheelImport": {
+    "module": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv/lib/python3.13/site-packages/quayready/__init__.py",
+    "prefix": "/Users/philippegodfroy/quayready/.runs/final-cold-start-1793572236973557000/venv"
+  },
+  "databaseIsolation": "Every pytest fixture initializes new file-backed app/target databases in a new temporary directory",
+  "workflowCoverage": "Full suite includes synthetic source seed/correction, independent approval, outbox, target receipt, actual process restart, response loss, retries and browser flows",
+  "limitations": "Same Mac and assistant-operated; not independent-human or Linux/hosted verification",
+  "finalAuditedSourceCommit": "94ab609c9338e4ccd9735aabca97d0243986ad72",
+  "applicationPackageSourceMatches": true,
+  "finalExecutionAt": "2026-11-01T22:39:12.986202+00:00"
+}
