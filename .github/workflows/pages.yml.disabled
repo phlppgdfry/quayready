@@ -9,6 +9,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   build:
+    if: github.actor == 'phlppgdfry' && github.triggering_actor == 'phlppgdfry'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
