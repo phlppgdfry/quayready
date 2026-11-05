@@ -1,4 +1,4 @@
-# INACTIVE TEMPLATE. Rename only after explicit publication approval and environment protection.
+# Owner-authorised static-only deployment. Source remains private.
 name: Publish approved static portfolio
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   build:
-    if: github.actor == 'phlppgdfry' && github.triggering_actor == 'phlppgdfry'
+    if: github.actor == 'phlppgdfry' && github.triggering_actor == 'phlppgdfry' && github.ref == 'refs/heads/implementation/e1'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:

@@ -7,6 +7,7 @@ import html
 import json
 import re
 import shutil
+import tomllib
 import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 from pathlib import Path
@@ -92,6 +93,10 @@ def snapshot() -> dict:
     )
     return {
         "kind": "recorded verification execution, separate from simulation; inspect executionEnvironment",
+        "version": tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["version"],
+        "sourceCommit": recorded.get("gitHeadAtExecution")
+        if re.fullmatch(r"[0-9a-f]{40}", str(recorded.get("gitHeadAtExecution", "")))
+        else None,
         "executionEnvironment": recorded.get("executionEnvironment", "LOCAL"),
         "executedAt": recorded["executedAt"],
         "result": recorded["result"],
@@ -168,7 +173,8 @@ def build(output: Path, public_url: str | None = None) -> dict:
             f'content="{html.escape(public_url.rstrip("/") + "/assets/social.png")}"',
         )
         text = text.replace(
-            "</head>", f'<link rel="canonical" href="{html.escape(public_url)}"></head>'
+            "</head>",
+            f'<link rel="canonical" href="{html.escape(public_url)}"><meta property="og:url" content="{html.escape(public_url)}"></head>',
         )
     video = ROOT / "evidence/rc/video/walkthrough.webm"
     if video.exists():

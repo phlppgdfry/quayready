@@ -1,5 +1,6 @@
 # Private GitHub release-candidate handoff
 
+> Historical checkpoint preserved. The owner subsequently authorised merge, static Pages publication and a private prerelease. See [current release closure](release-closure.md) for the final publication record.
 ## Verified scope
 
 The owner authorised only a feature-branch push, draft PR, hosted verification and corrections. [Draft PR #1](https://github.com/phlppgdfry/quayready/pull/1) uses `work/ultimate-showcase-release` → `implementation/e1`. The previously unpushed branch was advanced from `2a94609` to include the final audit work at `2117b13`; no merge commit, default-branch push, force-push or history rewrite was used. The strategy repository is unchanged.

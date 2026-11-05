@@ -10,7 +10,7 @@ This is an independent, AI-assisted portfolio and learning project with syntheti
 
 ![Genuine release-candidate workbench capture](evidence/rc/ui/hero.jpg)
 
-**Private GitHub release candidate `0.2.0rc1`.** Source remains private. The review branch and draft PR are published privately; [hosted Ubuntu CI passes](docs/hosted-validation.md). No website, package or Release is published. [Final sign-off](docs/final-signoff.md) · [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
+**Private GitHub release candidate `0.2.0rc1`.** Source remains private. [Explore the public showcase](https://phlppgdfry.github.io/quayready/). [Hosted verification](docs/hosted-validation.md) and [release closure](docs/release-closure.md) record the review and publication evidence. The GitHub prerelease is private; packages are not published. [Final sign-off](docs/final-signoff.md) · [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
 
 ## Explore in a browser
 
@@ -131,7 +131,7 @@ The first command runs formatting, linting, mypy, dependency integrity, Bandit, 
 
 Original E1 evidence remains under `evidence/`. New release evidence is under `evidence/rc/`, identified by the tested input-tree fingerprint and actual commands. [Release verification](docs/release-verification.md) explains results, resolved defects, incomplete/manual checks and limits. [Historical E1 verification](docs/verification.md) remains available.
 
-GitHub Actions is configured with upstream SHA pins, read-only repository permissions and no deployment or production secrets. No hosted success badge is claimed before an actual run. Automated accessibility checks supplement real keyboard, responsive and visual review; no WCAG certification or professional penetration test is claimed.
+Verification Actions use upstream SHA pins and read-only repository permissions. The separately dispatched Pages workflow grants Pages/OIDC write only to its deploy job and publishes only the approved static export, with no production secrets. No hosted success badge is claimed before an actual run. Automated accessibility checks supplement real keyboard, responsive and visual review; no WCAG certification or professional penetration test is claimed.
 
 ## Security and limitations
 
@@ -160,7 +160,7 @@ SQLite remains single-writer. Local administrators can alter files and audit pro
 | Verification, security and honest limits | [Release evidence](docs/release-verification.md) · [SECURITY](SECURITY.md) |
 | Demo and interview explanation | [Transcript](docs/demo-transcript.md) · [Mastery exercises](docs/learning.md) · [Interview package](docs/interview-package.md) |
 | Product identity and accessibility | [Design system](docs/design-system.md) |
-| Publication decision and repository metadata | [Publication checklist](docs/publication.md) |
+| Publication, release and reusable portfolio text | [Publication mechanism](docs/publication.md) · [Release closure](docs/release-closure.md) · [Portfolio description](docs/portfolio-description.md) |
 | Version changes | [Changelog](CHANGELOG.md) · [Release notes](docs/release-notes.md) |
 | Contributions and neutral provenance | [Contributing](CONTRIBUTING.md) · [Provenance](docs/provenance.md) |
 

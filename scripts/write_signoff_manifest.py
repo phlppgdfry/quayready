@@ -43,7 +43,7 @@ def main() -> int:
         ("history", ["gitleaks", "git", "--log-opts=--all", "--redact", "--no-banner"]),
         (
             "workflow",
-            ["actionlint", ".github/workflows/verify.yml", ".github/workflows/pages.yml.disabled"],
+            ["actionlint", ".github/workflows/verify.yml", ".github/workflows/pages.yml"],
         ),
     ]:
         result = subprocess.run(args, cwd=ROOT, capture_output=True, text=True)

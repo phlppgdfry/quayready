@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0rc1 — local release candidate, not published
+## 0.2.0rc1 — portfolio prerelease
 
 Final audit: full clean-wheel reproduction, full-history safety review, disabled exact Pages template, employer case study and concise interview/sign-off package. Application architecture preserved.
 
@@ -21,6 +21,12 @@ Final audit: full clean-wheel reproduction, full-history safety review, disabled
 - Publish the authorised private review branch and draft PR; record actual passing Ubuntu checks without replacing historical local evidence.
 - Preserve the allowlisted `.nojekyll` marker in the downloadable static artifact; default hidden-file exclusion was found by inspecting the hosted download. No public deployment is enabled.
 
+
+### Approved portfolio publication
+
+- Activate the existing owner-dispatched static-only Pages workflow on `implementation/e1`; keep application and research private.
+- Include release version/source provenance in public evidence and remove obsolete publication-pending copy.
+- Retain the prerelease version and original historical evidence; final execution details are in the private Release attachment and deployment runs.
 
 ## 0.1.0 — E1 baseline `b664034`
 
