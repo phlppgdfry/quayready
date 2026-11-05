@@ -24,6 +24,8 @@ Final audit: full clean-wheel reproduction, full-history safety review, disabled
 
 ### Approved portfolio publication
 
+- Drain the known POST body in the adversarial HTTP test peer before closing; otherwise an unintended TCP reset can mask the intended oversized-response rejection on hosted Linux. Production timeout/retry classification and all test assertions are preserved.
+
 - Activate the existing owner-dispatched static-only Pages workflow on `implementation/e1`; keep application and research private.
 - Include release version/source provenance in public evidence and remove obsolete publication-pending copy.
 - Retain the prerelease version and original historical evidence; final execution details are in the private Release attachment and deployment runs.

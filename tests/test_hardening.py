@@ -31,6 +31,10 @@ def peer(cfg, mode, status=200, payload=None):
 
         def do_POST(self):
             try:
+                # Consume the known worker request before closing this HTTP/1.0 peer.
+                # Unread inbound bytes can cause a TCP reset, unintentionally truncating
+                # the response instead of exercising the selected response fault.
+                self.rfile.read(int(self.headers.get("Content-Length", "0")))
                 if mode == "headers":
                     for byte in b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n":
                         self.wfile.write(bytes([byte]))

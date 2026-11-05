@@ -1,7 +1,7 @@
 {
   "phase": "fresh final-release premerge verification",
   "sourceBaseline": "1dec29bfbc3423721134558e95461344e518f5c2",
-  "testedWorkingTreeFingerprint": "ddbd8bb4319a514f978991bca53843025b365f9c3992373c9fd9664e00d7859d",
+  "testedWorkingTreeFingerprint": "f4fce50664643a26926f369e44425ee0bcd9c97bab65edf22e1dc1c823c323b9",
   "runtime": {
     "python": "3.13.18",
     "sqlite": "3.54.1",
@@ -148,5 +148,15 @@
   "pythonAdvisories": 0,
   "npmAdvisories": 0,
   "historicalEvidence": "preserved unchanged; fresh full raw logs/captures retained in ignored run directory",
-  "publicationResult": "recorded after actual execution in private prerelease closure-evidence.json"
+  "publicationResult": "recorded after actual execution in private prerelease closure-evidence.json",
+  "resolvedHostedFailure": {
+    "run": 42005002237,
+    "result": "1 failed, 196 passed",
+    "test": "test_E2_absolute_deadline_and_response_limits[oversize]",
+    "cause": "adversarial HTTP/1.0 peer did not consume POST body before closing; unintended TCP reset could truncate the intended response",
+    "correction": "consume known request body in test peer; no production behavior or assertions changed",
+    "targetedTests": "25 passed",
+    "completeLocalSuite": "197 passed; no failures/errors/skips"
+  },
+  "cleanWheelRuntimeStillMatchesSource": true
 }
