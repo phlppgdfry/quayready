@@ -12,3 +12,5 @@ Only these neutral artifacts were copied, with the owner's explicit implementati
 | `tests/rule-cases.json` | `docs/engineering/rule-cases.json` |
 
 The exact actual baseline paths and hashes are verified before publication and recorded in [verification](verification.md). New application code was written for this authorised project with AI assistance; no code was reused from unrelated portfolio repositories. Third-party dependencies retain their own licenses; the exact versions are in [the lock](../requirements-dev.lock). No production or proprietary documents/data are included. All identifiers and shipments are synthetic.
+
+The original E1 artifact hashes are historical baseline evidence. In this RC, OpenAPI evolves to 1.1.0 with documented reconciliation/cursor/time semantics; migration 001 and rule-case oracles remain preserved. Target migration 002, public-site code, neutral guides, original vector assets and genuine recordings are new authorised work. No private research was incorporated. System fonts are used locally; development-only axe-core and Prettier retain their respective dependency licenses.

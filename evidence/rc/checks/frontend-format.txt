@@ -1,0 +1,6 @@
+
+> quayready-release-tools@0.2.0-rc.1 check
+> prettier --check showcase src/quayready/static
+
+Checking formatting...
+All matched files use Prettier code style!

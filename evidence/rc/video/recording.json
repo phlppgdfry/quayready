@@ -1,0 +1,47 @@
+{
+  "kind": "actual local application recording",
+  "durationSeconds": 102.14717891599867,
+  "sourceRun": "new isolated synthetic run",
+  "fault": "target commit followed by response loss",
+  "captions": [
+    {
+      "start": 0.2493642909976188,
+      "end": 14.252809500001604,
+      "text": "QuayReady: a real local synthetic integration lab. Three pallets expected; P003 has no warehouse evidence."
+    },
+    {
+      "start": 14.31416262499988,
+      "end": 26.3176795829786,
+      "text": "A higher complete warehouse snapshot corrects the discrepancy. Fresh evidence makes version four eligible for review."
+    },
+    {
+      "start": 26.451420750003308,
+      "end": 36.453615040984005,
+      "text": "The requesting subject cannot approve. This is a server-side rejection, even when that identity has both roles."
+    },
+    {
+      "start": 36.7019092499977,
+      "end": 50.70419479100383,
+      "text": "A different subject approves evidence v4. Approval and immutable outbox commit together. Queued is not yet delivered."
+    },
+    {
+      "start": 51.12106933299219,
+      "end": 67.12382145799347,
+      "text": "The independent target committed, then deliberately lost its response. The app reports uncertainty rather than success."
+    },
+    {
+      "start": 67.52755079098279,
+      "end": 83.52940908298478,
+      "text": "A new worker process looks up the same dispatch identifier. Its matching receipt confirms the existing target effect."
+    },
+    {
+      "start": 83.54510366599425,
+      "end": 95.54753816599259,
+      "text": "The audit connects source, operator, reviewer and delivery. Real HTTP, separate databases, one effect. No physical departure authorisation."
+    }
+  ],
+  "noVoiceover": true,
+  "credentials": "masked local login input; no tokens displayed",
+  "compression": "ffmpeg libvpx-vp9, CRF 38, no audio; original recording retained in ignored source run",
+  "videoBytes": 1459162
+}

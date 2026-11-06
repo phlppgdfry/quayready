@@ -1,5 +1,7 @@
 # Implemented E1 design and decisions
 
+> This document preserves the E1 design. See [current architecture](architecture.md) and [release changes](release-verification.md) for manual reconciliation, target migration 002, strict response/deadline handling and the redesigned workbench.
+
 [Run](../README.md) · [Evidence](verification.md) · [Learning](learning.md) · [Next phase](next-phase.md)
 
 ## Boundaries and data ownership

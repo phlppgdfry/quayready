@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import http.client
+import socket
+import threading
 import time
 from collections.abc import Callable
 from typing import Any
 
 from .common import Json, Problem, instant, parse_json, validate, wall_ms
+from .config import TARGET_SITE
 from .store import Store
 
 
@@ -55,6 +58,20 @@ class Worker:
             ).fetchone()
             if row is None:
                 return None
+            if row["site_id"] != TARGET_SITE:
+                c.execute(
+                    "UPDATE outbox SET state='MANUAL_REVIEW',last_error_code='TARGET_CONTRACT_ERROR' WHERE dispatch_id=?",
+                    (row["dispatch_id"],),
+                )
+                self.store.audit(
+                    c,
+                    row["site_id"],
+                    row["shipment_id"],
+                    "DEMO-WORKER",
+                    "target_scope_rejected",
+                    {"dispatchId": row["dispatch_id"]},
+                )
+                return None
             good = self.valid(c, row)
             if not good and row["post_attempts"] == 0:
                 c.execute(
@@ -73,10 +90,9 @@ class Worker:
                     c, row["site_id"], row["shipment_id"], "DEMO-WORKER", "retry_exhausted"
                 )
                 return None
-            # counter is an internal two-value allowlist, not user-controlled SQL.
             c.execute(
-                f"UPDATE outbox SET state='SENDING',next_action=?,{counter}={counter}+1,lease_generation=lease_generation+1,lease_until_ms=?,last_worker_at_ms=? WHERE dispatch_id=?",
-                (action, now + 30000, now, row["dispatch_id"]),
+                "UPDATE outbox SET state='SENDING',next_action=?,post_attempts=post_attempts+CASE WHEN ?='POST' THEN 1 ELSE 0 END,lookup_attempts=lookup_attempts+CASE WHEN ?='LOOKUP' THEN 1 ELSE 0 END,lease_generation=lease_generation+1,lease_until_ms=?,last_worker_at_ms=? WHERE dispatch_id=?",
+                (action, action, action, now + 30000, now, row["dispatch_id"]),
             )
             self.store.audit(
                 c,
@@ -95,11 +111,30 @@ class Worker:
     def request(self, row: Json) -> tuple[int, Json | None, int]:
         if self.store.db.transaction_active:
             raise RuntimeError("HTTP inside database transaction is forbidden")
+        if row["site_id"] != TARGET_SITE:
+            return -1, None, 0
         if self.before_http:
             self.before_http(row)
         conn = http.client.HTTPConnection("127.0.0.1", self.store.settings.target_port, timeout=1)
         deadline = time.monotonic() + 3
+        timer: threading.Timer | None = None
         try:
+            conn.connect()
+            transport = conn.sock
+            if transport is None:
+                raise OSError("Target connection unavailable")
+
+            def interrupt() -> None:
+                # A socket inactivity timeout is insufficient against trickled headers/body.
+                # Shutdown also interrupts a read after HTTPConnection detaches its socket.
+                try:
+                    transport.shutdown(socket.SHUT_RDWR)
+                except OSError:
+                    pass
+
+            timer = threading.Timer(max(0, deadline - time.monotonic()), interrupt)
+            timer.daemon = True
+            timer.start()
             path = "/mock/v1/dispatch-requests"
             if row["next_action"] == "LOOKUP":
                 path += "/" + row["dispatch_id"]
@@ -113,8 +148,7 @@ class Worker:
                     "Content-Type": "application/json",
                 },
             )
-            if conn.sock:
-                conn.sock.settimeout(max(0.01, deadline - time.monotonic()))
+            transport.settimeout(max(0.01, deadline - time.monotonic()))
             response = conn.getresponse()
             chunks: list[bytes] = []
             size = 0
@@ -122,8 +156,7 @@ class Worker:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     raise TimeoutError()
-                if conn.sock:
-                    conn.sock.settimeout(remaining)
+                transport.settimeout(remaining)
                 chunk = response.read1(min(8192, 65537 - size))
                 if not chunk:
                     break
@@ -131,14 +164,27 @@ class Worker:
                 size += len(chunk)
                 if size > 65536:
                     return -1, None, 0
+                if response.isclosed():
+                    break
             if response.length not in (None, 0):
                 raise http.client.IncompleteRead(b"", response.length)
             retry = response.getheader("Retry-After", "")
-            retry_ms = int(retry) * 1000 if retry.isdigit() and int(retry) <= 60 else 0
+            retry_ms = (
+                int(retry) * 1000
+                if retry.isascii() and retry.isdigit() and len(retry) <= 10 and int(retry) <= 60
+                else 0
+            )
             accepted = (200, 201) if row["next_action"] == "POST" else (200,)
             if 200 <= response.status < 300 and response.status not in accepted:
                 return -1, None, 0
             if response.status in accepted:
+                if time.monotonic() >= deadline:
+                    return 0, None, 0
+                if (
+                    response.getheader("Content-Type", "").split(";")[0].strip().lower()
+                    != "application/json"
+                ):
+                    return -1, None, 0
                 try:
                     value = parse_json(b"".join(chunks))
                     validate("TargetReceipt", value)
@@ -154,7 +200,77 @@ class Worker:
         except (OSError, http.client.HTTPException):
             return 0, None, 0
         finally:
+            if timer:
+                timer.cancel()
             conn.close()
+
+    def reconcile(self, principal: Any, dispatch_id: str) -> Json:
+        """Explicit reviewer GET-only investigation; automatic attempt budgets never reset."""
+        if "reviewer" not in principal.roles:
+            raise Problem(403, "FORBIDDEN")
+        with self.store.db.transaction() as c:
+            current = c.execute(
+                "SELECT * FROM outbox WHERE site_id=? AND dispatch_id=?",
+                (principal.site, dispatch_id),
+            ).fetchone()
+            if not current:
+                raise Problem(404, "NOT_FOUND")
+            if current["site_id"] != TARGET_SITE:
+                raise Problem(403, "FORBIDDEN", "No target is configured for this site")
+            if current["state"] != "MANUAL_REVIEW":
+                raise Problem(
+                    409, "TARGET_UNCERTAIN", "Only manual-review deliveries can be reconciled"
+                )
+            c.execute(
+                "UPDATE outbox SET lease_generation=lease_generation+1,next_action='LOOKUP' WHERE dispatch_id=?",
+                (dispatch_id,),
+            )
+            row = dict(
+                c.execute("SELECT * FROM outbox WHERE dispatch_id=?", (dispatch_id,)).fetchone()
+            )
+            self.store.audit(
+                c,
+                principal.site,
+                row["shipment_id"],
+                principal.subject,
+                "manual_lookup_requested",
+                {"dispatchId": dispatch_id},
+            )
+        row["next_action"] = "LOOKUP"
+        status, receipt, _ = self.request(row)
+        with self.store.db.transaction() as c:
+            current = c.execute(
+                "SELECT * FROM outbox WHERE dispatch_id=? AND state='MANUAL_REVIEW' AND lease_generation=?",
+                (dispatch_id, row["lease_generation"]),
+            ).fetchone()
+            if not current:
+                raise Problem(409, "TARGET_UNCERTAIN", "A newer reconciliation owns the result")
+            self.store.reconcile(c, principal.site, row["shipment_id"])
+            if receipt:
+                if not self.valid(c, current):
+                    self.store.issue(
+                        c,
+                        principal.site,
+                        row["shipment_id"],
+                        "POST_APPROVAL_CHANGE",
+                        "Integration",
+                        [],
+                    )
+                c.execute(
+                    "UPDATE outbox SET state='CONFIRMED',target_receipt_id=?,confirmed_at_ms=?,last_error_code=NULL WHERE dispatch_id=?",
+                    (receipt["receiptId"], instant(receipt["acceptedAt"]), dispatch_id),
+                )
+            self.store.audit(
+                c,
+                principal.site,
+                row["shipment_id"],
+                principal.subject,
+                "manual_lookup_confirmed" if receipt else "manual_lookup_unresolved",
+                {"dispatchId": dispatch_id, "httpStatus": status},
+            )
+            return self.store.delivery_view(
+                c.execute("SELECT * FROM outbox WHERE dispatch_id=?", (dispatch_id,)).fetchone()
+            )
 
     def finish(self, row: Json, status: int, receipt: Json | None, retry_after: int = 0) -> bool:
         now = self.clock()

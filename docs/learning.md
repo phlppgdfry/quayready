@@ -89,3 +89,29 @@ Implementation with an AI assistant is not evidence that the owner can independe
 ## First independent assessment
 
 Do four short exercises before adding features: the missing-pallet SQL query, a new readiness-boundary test, two-session self-approval rejection and a narrated lost-response recovery. A second person should ask the questions and inspect the real results. Record help honestly. A test-suite pass or AI-generated explanation cannot substitute for this assessment.
+
+## Release mastery rubric and common mistakes
+
+Score each task independently: **0** cannot explain; **1** can follow a worked example with help; **2** predicts and performs it independently; **3** can diagnose an unexpected result and explain the tradeoff. Record AI help explicitly. No overall professional seniority is inferred. Aim for level 2 on every foundation before adding features.
+
+| Exercise | Expected reasoning | Common mistake |
+|---|---|---|
+| Write a Python set-comparison function and one boundary test | Separate input facts from deterministic output; predict exact missing IDs | Treating UNKNOWN as an empty confirmed set; copying an AI answer without predicting output |
+| Write SELECT/WHERE/JOIN/GROUP BY queries against a new run | Join current receipt membership; explain each key and parameter | Summing historical snapshots or interpolating user input into SQL |
+| Send identical and changed event payloads using a small personal client | Distinguish 201/200/409 and stable receipt/version | Changing the event ID to hide a retry problem |
+| Inject validation and HTTP failures | Schema errors reject before business writes; timeout is uncertain | Interpreting timeout as proof of no target effect |
+| Explain approval/outbox transaction and simulate rollback | A single local COMMIT protects the pair, not the remote system | Claiming distributed atomicity across HTTP |
+| Trace an expired lease and an overlapping worker | Generation fences old local results; target uniqueness handles repeated packets | Assuming a lease retracts a packet already sent |
+| Perform GET-only manual reconciliation | Investigate an existing identifier; preserve counters and barrier | Force-send, new dispatch ID or counter reset to make the UI green |
+| Demonstrate same subject in two sessions | Stable identity, role and site are different checks | Treating a new session or hidden button as separation of duties |
+| Explain the public simulation | It is independent educational presentation, not backend execution | Showing simulated steps as real integration/test proof |
+
+Debugging challenge: introduce one wrong missing-pallet JOIN or a deliberate expiry comparison defect on a personal branch. Predict the failing test, locate the defect with a debugger, repair it and explain the root cause without asking AI to write the fix. Keep the release branch unchanged.
+
+Business analyst interview: What requirement prevents a reviewer override? Which stakeholder owns missing warehouse evidence? What measurable operational KPI would need a real pilot rather than this synthetic lab?
+
+Integration engineer interview: Why GET after lost response? Who owns idempotency and payload conflict detection? What does fencing protect, and what cannot it protect?
+
+Architecture interview: Why explicit SQL and one codebase here? What supplier contract would be needed for target reconciliation? When would SQLite or the local identity model cease to be appropriate?
+
+Two-minute interview demonstration: show missing P003; apply a real source correction; explain evidence v4; demonstrate self-approval rejection and independent approval; show QUEUED before delivery; explain the target receipt and narrate the real lost-response recording. Finish by stating the synthetic, local and learning limitations. The genuine video and transcript are in the release documentation; a simulation is never substituted for this demonstration.

@@ -43,9 +43,7 @@ class Database:
             tables = db.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
             if tables:
                 if self.target:
-                    version = db.execute("PRAGMA user_version").fetchone()[0]
-                    if version != 1:
-                        raise RuntimeError("Unknown target schema")
+                    self.target_migrations(db, checksum)
                 else:
                     row = db.execute(
                         "SELECT checksum FROM schema_migrations WHERE version=1"
@@ -60,11 +58,42 @@ class Database:
                 else:
                     db.execute("INSERT INTO schema_migrations VALUES(1,?,?)", (checksum, wall_ms()))
                 db.execute("COMMIT")
+                if self.target:
+                    self.target_migrations(db, checksum)
             except BaseException:
                 if db.in_transaction:
                     db.execute("ROLLBACK")
                 raise
         os.chmod(self.path, 0o600)
+
+    def target_migrations(self, db: sqlite3.Connection, initial: str) -> None:
+        version = db.execute("PRAGMA user_version").fetchone()[0]
+        second = CONTRACTS.joinpath("002-target-integrity.sql").read_text()
+        expected = {1: initial, 2: hashlib.sha256(second.encode()).hexdigest()}
+        if version not in (1, 2):
+            raise RuntimeError("Unknown target schema")
+        # Independently instantiate the approved DDL to detect drift before upgrading E1.
+        with closing(sqlite3.connect(":memory:")) as reference:
+            reference.executescript(CONTRACTS.joinpath("001-target.sql").read_text())
+            if version == 2:
+                reference.executescript(second)
+            query = "SELECT type,name,sql FROM sqlite_master WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_%' ORDER BY type,name"
+            if [tuple(r) for r in db.execute(query)] != reference.execute(query).fetchall():
+                raise RuntimeError("Target schema drift detected")
+        if version == 1:
+            try:
+                db.executescript(second.rsplit("COMMIT;", 1)[0])
+                db.executemany(
+                    "INSERT INTO schema_migrations VALUES(?,?,?)",
+                    [(n, h, wall_ms()) for n, h in expected.items()],
+                )
+                db.execute("COMMIT")
+            except BaseException:
+                if db.in_transaction:
+                    db.execute("ROLLBACK")
+                raise
+        elif dict(db.execute("SELECT version,checksum FROM schema_migrations")) != expected:
+            raise RuntimeError("Unknown or changed target migration")
 
     @contextmanager
     def transaction(self, write: bool = True) -> Iterator[sqlite3.Connection]:

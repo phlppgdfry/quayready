@@ -1,0 +1,7 @@
+{
+  "kind": "declared operation/method/status combinations actually schema-validated in execution; not code coverage",
+  "declared": 108,
+  "observed": 108,
+  "missing": [],
+  "fullGate": true
+}

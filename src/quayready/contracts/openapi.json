@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "QuayReady engineering contract",
-    "version": "1.0.0",
-    "description": "Local synthetic-data lab. No NDQ affiliation. Not physical or customs departure authorisation. See api-semantics.md for cross-field, canonicalisation and temporal rules. No runtime is implemented."
+    "version": "1.1.0",
+    "description": "Implemented local synthetic integration lab. Independent branding; no company affiliation, physical departure or customs authorisation. Review-only dispatch requests. See docs/implementation.md."
   },
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "servers": [
@@ -82,9 +82,9 @@
             "required": true,
             "schema": {
               "type": "string",
-              "const": "http://127.0.0.1:8080"
+              "format": "uri"
             },
-            "description": "Exact browser origin; local demo only."
+            "description": "Must equal the configured application origin. Default http://127.0.0.1:8080; alternative local ports are explicit configuration only."
           }
         ],
         "requestBody": {
@@ -138,9 +138,9 @@
             "required": true,
             "schema": {
               "type": "string",
-              "const": "http://127.0.0.1:8080"
+              "format": "uri"
             },
-            "description": "Exact browser origin; local demo only."
+            "description": "Must equal the configured application origin. Default http://127.0.0.1:8080; alternative local ports are explicit configuration only."
           }
         ]
       }
@@ -211,9 +211,6 @@
           },
           "403": {
             "$ref": "#/components/responses/403"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
           },
           "409": {
             "$ref": "#/components/responses/409"
@@ -572,7 +569,8 @@
             "schema": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "maximum": 9223372036854775807
             },
             "description": "Return sequence > after in ascending order; nextAfter is last returned sequence when another row exists."
           },
@@ -718,9 +716,9 @@
             "required": true,
             "schema": {
               "type": "string",
-              "const": "http://127.0.0.1:8080"
+              "format": "uri"
             },
-            "description": "Exact browser origin; local demo only."
+            "description": "Must equal the configured application origin. Default http://127.0.0.1:8080; alternative local ports are explicit configuration only."
           }
         ],
         "requestBody": {
@@ -836,9 +834,9 @@
             "required": true,
             "schema": {
               "type": "string",
-              "const": "http://127.0.0.1:8080"
+              "format": "uri"
             },
-            "description": "Exact browser origin; local demo only."
+            "description": "Must equal the configured application origin. Default http://127.0.0.1:8080; alternative local ports are explicit configuration only."
           }
         ],
         "requestBody": {
@@ -1026,7 +1024,8 @@
             "schema": {
               "type": "integer",
               "minimum": 0,
-              "default": 0
+              "default": 0,
+              "maximum": 9223372036854775807
             },
             "description": "Return sequence > after in ascending order; nextAfter is last returned sequence when another row exists."
           }
@@ -1057,6 +1056,9 @@
                 }
               }
             }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           }
         }
       }
@@ -1088,6 +1090,9 @@
           },
           "503": {
             "$ref": "#/components/responses/503"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           }
         }
       }
@@ -1174,9 +1179,6 @@
           },
           "503": {
             "$ref": "#/components/responses/503"
-          },
-          "429": {
-            "$ref": "#/components/responses/429"
           }
         },
         "requestBody": {
@@ -1279,6 +1281,100 @@
           }
         ]
       }
+    },
+    "/v1/deliveries/{dispatchId}/reconcile": {
+      "post": {
+        "operationId": "reconcileDelivery",
+        "summary": "Reviewer-authorised GET-only investigation of a MANUAL_REVIEW delivery",
+        "description": "Reserves a generation, performs one bounded target GET outside a transaction, audits the result. Never POSTs to target, changes dispatch identity, resets budgets or clears the unresolved barrier without a matching receipt. Concurrent older result is rejected. The single mock target credential is bound to DEMO-ZEE; other-site target investigation is rejected with 403 before HTTP.",
+        "x-required-roles": [
+          "operator"
+        ],
+        "security": [
+          {
+            "SessionCookie": [],
+            "CsrfToken": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "413": {
+            "$ref": "#/components/responses/413"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          },
+          "200": {
+            "description": "Confirmed receipt or unchanged manual-review uncertainty",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Delivery"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "dispatchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Must equal the configured application origin. Default http://127.0.0.1:8080; alternative local ports are explicit configuration only."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconcileRequest"
+              },
+              "examples": {
+                "synthetic": {
+                  "value": {
+                    "expectedEvidenceVersion": 4
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-role": "reviewer"
+      }
     }
   },
   "components": {
@@ -1314,7 +1410,8 @@
       "Instant": {
         "type": "string",
         "format": "date-time",
-        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$"
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?(?:Z|[+-]\\d{2}:\\d{2})$",
+        "description": "RFC3339 UTC-convertible timestamp, millisecond precision maximum. The persisted contract excludes pre-Unix-epoch and UTC values outside years 1 through 9999."
       },
       "Uuid": {
         "type": "string",
@@ -2737,6 +2834,10 @@
             "status": "READY"
           }
         ]
+      },
+      "ReconcileRequest": {
+        "type": "object",
+        "additionalProperties": false
       }
     },
     "responses": {

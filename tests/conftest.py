@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+import os
+import re
 import socket
 from pathlib import Path
 
@@ -11,6 +14,41 @@ from quayready.cli import initialize, key_for
 from quayready.common import Json, iso
 from quayready.config import Settings, load_settings
 from quayready.store import Store
+
+OBSERVED: set[tuple[str, str, str]] = set()
+
+
+def pytest_sessionfinish(session, exitstatus):
+    from quayready.common import SPEC
+
+    expected = {
+        (p, m, status)
+        for p, v in SPEC["paths"].items()
+        for m, op in v.items()
+        if m in ("get", "post", "delete")
+        for status in op["responses"]
+    }
+    missing = expected - OBSERVED
+    full = os.getenv("QUAYREADY_FULL_CONTRACT_GATE") == "1"
+    destination = Path(
+        "evidence/rc/response-coverage.json" if full else ".runs/response-coverage.json"
+    )
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(
+        json.dumps(
+            {
+                "kind": "declared operation/method/status combinations actually schema-validated in execution; not code coverage",
+                "declared": len(expected),
+                "observed": len(OBSERVED),
+                "missing": [list(x) for x in sorted(missing)],
+                "fullGate": full,
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    if full and missing:
+        session.exitstatus = 1
 
 
 def port() -> int:
@@ -34,6 +72,23 @@ def store(cfg: Settings) -> Store:
 @pytest.fixture
 def client(cfg: Settings):
     with TestClient(create_app(cfg), base_url=cfg.origin) as c:
+        original = c.request
+
+        def checked(method, url, **kwargs):
+            from test_contracts import response_contract
+
+            from quayready.common import SPEC
+
+            result = original(method, url, **kwargs)
+            path = str(url).split("?")[0]
+            for route, operations in SPEC["paths"].items():
+                pattern = re.sub(r"\{[^}]+\}", "[^/]+", route)
+                if re.fullmatch(pattern, path) and method.lower() in operations:
+                    response_contract(result, route, method.lower())
+                    break
+            return result
+
+        c.request = checked
         yield c
 
 

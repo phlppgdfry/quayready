@@ -1,0 +1,327 @@
+{
+  "kind": "downloaded actual GitHub Actions result; no deployment",
+  "run": {
+    "conclusion": "success",
+    "headSha": "2117b1330b48922c5cae208929cef60f65be7009",
+    "jobs": [
+      {
+        "completedAt": "2026-11-01T22:53:58Z",
+        "conclusion": "success",
+        "databaseId": 125005762042,
+        "name": "verify",
+        "startedAt": "2026-11-01T22:51:33Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-01T22:51:35Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-01T22:51:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:51:36Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 2,
+            "startedAt": "2026-11-01T22:51:35Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:51:46Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+            "number": 3,
+            "startedAt": "2026-11-01T22:51:36Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:51:47Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+            "number": 4,
+            "startedAt": "2026-11-01T22:51:46Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:52:36Z",
+            "conclusion": "success",
+            "name": "Install exact development dependencies",
+            "number": 5,
+            "startedAt": "2026-11-01T22:51:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:53:45Z",
+            "conclusion": "success",
+            "name": "Verify application, contracts, security, browser, accessibility and static build",
+            "number": 6,
+            "startedAt": "2026-11-01T22:52:36Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:53:52Z",
+            "conclusion": "success",
+            "name": "Check dependency advisories",
+            "number": 7,
+            "startedAt": "2026-11-01T22:53:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:53:53Z",
+            "conclusion": "success",
+            "name": "Retain actual execution evidence (never run credentials)",
+            "number": 8,
+            "startedAt": "2026-11-01T22:53:52Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:53:54Z",
+            "conclusion": "success",
+            "name": "Retain static preview only; no deployment",
+            "number": 9,
+            "startedAt": "2026-11-01T22:53:53Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:53:54Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+            "number": 16,
+            "startedAt": "2026-11-01T22:53:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:53:56Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+            "number": 17,
+            "startedAt": "2026-11-01T22:53:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:53:56Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 18,
+            "startedAt": "2026-11-01T22:53:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-01T22:53:57Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 19,
+            "startedAt": "2026-11-01T22:53:57Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/phlppgdfry/quayready/actions/runs/41359218094/job/125005762042"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/phlppgdfry/quayready/actions/runs/41359218094"
+  },
+  "artifacts": [
+    {
+      "digest": "sha256:1e142635269a4323c76709530595c71c04c746f1c74efdeb1ccd75e8b5b0fbe8",
+      "expired": false,
+      "id": 13104518075,
+      "name": "quayready-local-equivalent-checks",
+      "size_in_bytes": 15112
+    },
+    {
+      "digest": "sha256:42f7b2caf035a150f89919dec9c3b483f0f53c8f5a878fa7f04e58ef2dbce9c5",
+      "expired": false,
+      "id": 13104468295,
+      "name": "quayready-static-preview",
+      "size_in_bytes": 1514849
+    }
+  ],
+  "downloadedEvidence": {
+    "sourceCommit": "2117b1330b48922c5cae208929cef60f65be7009",
+    "executionEnvironment": "GITHUB_ACTIONS",
+    "python": "3.13.18",
+    "sqlite": "3.45.1",
+    "dependencies": {
+      "fastapi": "0.162.0",
+      "starlette": "1.10.0",
+      "httpx": "0.28.1",
+      "httpx2": "2.16.0",
+      "uvicorn": "0.54.0",
+      "jsonschema": "4.26.0",
+      "jinja2": "3.1.6",
+      "pytest": "9.2.0",
+      "playwright": "1.64.1",
+      "ruff": "0.17.3",
+      "mypy": "2.4.1",
+      "setuptools": "84.1.0",
+      "openapi-spec-validator": "0.9.0"
+    },
+    "result": "PASS",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": "python -m ruff check src tests scripts",
+        "exitCode": 0
+      },
+      {
+        "name": "format",
+        "command": "python -m ruff format --check src tests scripts",
+        "exitCode": 0
+      },
+      {
+        "name": "mypy",
+        "command": "python -m mypy src",
+        "exitCode": 0
+      },
+      {
+        "name": "dependencies",
+        "command": "python -m pip check",
+        "exitCode": 0
+      },
+      {
+        "name": "frontend-format",
+        "command": "npm run check",
+        "exitCode": 0
+      },
+      {
+        "name": "bandit",
+        "command": "python -m bandit -r src -q",
+        "exitCode": 0
+      },
+      {
+        "name": "package",
+        "command": "python -m build --no-isolation",
+        "exitCode": 0
+      },
+      {
+        "name": "pytest",
+        "command": "python -m pytest -q --junitxml=evidence/rc/pytest.xml",
+        "exitCode": 0
+      },
+      {
+        "name": "showcase",
+        "command": "python scripts/build_showcase.py",
+        "exitCode": 0
+      },
+      {
+        "name": "local-secret-canaries",
+        "count": 0,
+        "leakedFiles": [],
+        "exitCode": 0
+      },
+      {
+        "name": "documentation-links",
+        "broken": [],
+        "exitCode": 0
+      },
+      {
+        "name": "tested-input-integrity",
+        "changed": [],
+        "exitCode": 0
+      },
+      {
+        "name": "final-evidence-export",
+        "command": "python scripts/build_showcase.py",
+        "exitCode": 0
+      }
+    ],
+    "tests": {
+      "tests": 196,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "responseCoverage": {
+      "kind": "declared operation/method/status combinations actually schema-validated in execution; not code coverage",
+      "declared": 108,
+      "observed": 108,
+      "missing": [],
+      "fullGate": true
+    }
+  },
+  "prepush": {
+    "sourceCommit": "2117b1330b48922c5cae208929cef60f65be7009",
+    "result": "PASS",
+    "workingTreeIdentifier": "43617565290712194d5fa87d38d4be920c954a39a4e9a328800b5aa1a076e8e4",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": "python -m ruff check src tests scripts",
+        "exitCode": 0
+      },
+      {
+        "name": "format",
+        "command": "python -m ruff format --check src tests scripts",
+        "exitCode": 0
+      },
+      {
+        "name": "mypy",
+        "command": "python -m mypy src",
+        "exitCode": 0
+      },
+      {
+        "name": "dependencies",
+        "command": "python -m pip check",
+        "exitCode": 0
+      },
+      {
+        "name": "frontend-format",
+        "command": "npm run check",
+        "exitCode": 0
+      },
+      {
+        "name": "bandit",
+        "command": "python -m bandit -r src -q",
+        "exitCode": 0
+      },
+      {
+        "name": "package",
+        "command": "python -m build --no-isolation",
+        "exitCode": 0
+      },
+      {
+        "name": "pytest",
+        "command": "python -m pytest -q --junitxml=evidence/rc/pytest.xml",
+        "exitCode": 0
+      },
+      {
+        "name": "showcase",
+        "command": "python scripts/build_showcase.py",
+        "exitCode": 0
+      },
+      {
+        "name": "local-secret-canaries",
+        "count": 56,
+        "leakedFiles": [],
+        "exitCode": 0
+      },
+      {
+        "name": "documentation-links",
+        "broken": [],
+        "exitCode": 0
+      },
+      {
+        "name": "tested-input-integrity",
+        "changed": [],
+        "exitCode": 0
+      },
+      {
+        "name": "final-evidence-export",
+        "command": "python scripts/build_showcase.py",
+        "exitCode": 0
+      }
+    ],
+    "pythonAuditKnownVulnerabilities": 0,
+    "npmAuditKnownVulnerabilities": 0
+  },
+  "publication": "PRIVATE feature branch and draft PR only; no merge, Pages, deployment, tag, Release or visibility change",
+  "draftPR": "https://github.com/phlppgdfry/quayready/pull/1",
+  "limitations": [
+    "This records the specified immutable run; consult current PR head checks for later commits",
+    "Artifacts retained by GitHub for 14 days",
+    "Independent personal mastery and human reproduction not observed"
+  ]
+}

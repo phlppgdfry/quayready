@@ -1,0 +1,5 @@
+Baseline b664034, clean local and matching remote implementation/e1.
+Executed: python scripts/verify.py
+39 passed, 1 warning in 14.30 seconds; exit 0.
+Ruff, formatting, mypy, pip check, 21 canaries, relative links passed.
+Original E1 evidence is preserved under evidence/; RC results are separate.

@@ -1,38 +1,57 @@
 # QuayReady
 
-**Cross-dock Readiness & Integration Lab** — a working, synthetic logistics integration exercise.
+**Cross-dock Readiness & Integration Lab**
 
-Three expected pallets. Two observed. One clear discrepancy. Correct the warehouse snapshot, request a version-bound review, and let a different person approve a dispatch **request**. Follow that request into an independent mock-TMS, including when its successful response is lost.
+Reliable logistics integration, from warehouse evidence to transport review.
 
-This independent portfolio project is not an official company application, a real WMS/TMS integration, customs clearance or physical departure authorisation. It uses synthetic data only. AI assistance contributed to implementation; passing tests does not establish the owner's personal mastery.
+Three pallets are expected. Two are observed. QuayReady explains the missing evidence, reconciles a corrected source snapshot, requires independent review of that exact evidence version and reliably transfers a dispatch-review request to an independently persisted mock-TMS.
 
-![Actual executed workbench: three pallets, independent approval and target receipt](evidence/ui/03-confirmed-desktop.png)
+This is an independent, AI-assisted portfolio and learning project with synthetic data. It is not an official or commissioned company application, a real vendor integration, customs clearance or physical departure authorisation. No company endorsement, production compliance, measured ROI or professional client experience is claimed.
 
-## What works in E1
+![Genuine release-candidate workbench capture](evidence/rc/ui/hero.jpg)
 
-- Strict order and complete warehouse/document snapshot ingestion; identical replay, conflicting replay, stale revisions and source conflict recovery.
-- Deterministic pallet reconciliation with explicit evidence expiry, hard holds and cutoff boundaries. Current snapshots replace earlier snapshots; scan history is not summed.
-- Server-rendered operational workbench with real persisted state, issue ownership, source revisions, review and delivery history. Desktop and mobile browser workflow tested.
-- Stable-subject separation of duties, server-side roles/site scope, session/CSRF checks and version-bound review.
-- Approval and immutable outbox creation in one SQLite transaction, enforced by deferred foreign keys.
-- Separate target HTTP process and database; stable dispatch identifiers, idempotent effects and receipt lookup.
-- Durable retry counters, worker leases/fencing, lookup-first uncertainty recovery and restart recovery.
+**Private GitHub release candidate `0.2.0rc1`.** Source remains private. [Explore the public showcase](https://phlppgdfry.github.io/quayready/). [Hosted verification](docs/hosted-validation.md) and [release closure](docs/release-closure.md) record the review and publication evidence. The GitHub prerelease is private; packages are not published. [Final sign-off](docs/final-signoff.md) · [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
 
-The actual guarantee is **bounded at-least-once delivery attempts with an idempotent target effect under the simulated contract**. Eventual delivery and universal exactly-once processing are not promised.
+## Explore in a browser
 
-## Run locally
+The independent static showcase has a step-by-step workflow simulation, failure/recovery lab, selectable architecture, real screenshots and a captioned authentic application walkthrough. Simulations are explicitly labelled and never call the private backend.
 
-Prerequisites: CPython **3.13**, SQLite **>=3.37** with JSON, and a local terminal. Verified runtime and checks are in [the evidence report](docs/verification.md). No Docker or paid cloud service is needed. Commands below run from this directory.
+After installing the development dependencies below:
+
+```sh
+.venv/bin/python scripts/build_showcase.py
+.venv/bin/python -m http.server 18790 --bind 127.0.0.1 --directory .runs/site
+```
+
+Open **http://127.0.0.1:18790/quayready/**. This is a static local preview, not a public deployment. The build works under repository subpaths and uses an explicit public-asset allowlist. [Showcase source](showcase/index.html) and [publication decisions](docs/publication.md) remain separate from backend authority. No dead live-demo or CI badge is displayed.
+
+## Engineering capabilities
+
+- Strict authenticated order/snapshot APIs; canonical idempotency, revision guards and committed conflicts.
+- Deterministic readiness, current-snapshot pallet sets, hard holds, expiry and cutoff boundaries.
+- Stable-subject independent approval, version-bound proposals, server-side roles/site scope and CSRF.
+- Approval plus immutable outbox atomically persisted; SQL constraints prevent orphan approval.
+- Separate target HTTP process and database; persistent unique effect and receipt lookup.
+- Bounded automatic retries, absolute HTTP deadline, response-size limits, leases, generation fencing and restart recovery.
+- Explicit reviewer-authorised **GET-only** reconciliation of terminal uncertainty; no force-send, new identifier or budget reset.
+- Real process overlap, injected result-COMMIT failure, hostile-response probes, contract/security tests, browser/axe checks and genuine evidence.
+
+The guarantee is **bounded at-least-once delivery attempts with an idempotent target effect under the simulated contract**. Neither eventual delivery nor universal exactly-once processing is promised.
+
+## Quick start: real application
+
+Prerequisites: CPython **3.13**, SQLite **>=3.37** with JSON, Node **24** for development-only formatting/accessibility tools. The static output itself has zero runtime framework dependencies. No Docker or paid service is required. Run commands from the repository root:
 
 ```sh
 python3.13 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.lock
 .venv/bin/python -m pip install -e . --no-deps --no-build-isolation
+npm ci --ignore-scripts
 .venv/bin/python -m playwright install chromium
 .venv/bin/quayready init
 ```
 
-Start the app and target in **separate terminals**, then leave them running:
+Start app and target in **separate terminals**:
 
 ```sh
 .venv/bin/quayready serve
@@ -49,74 +68,102 @@ In a third terminal:
 .venv/bin/quayready credentials --role operator
 ```
 
-Open **http://127.0.0.1:8080** (use this exact host). Paste your locally generated token into the login screen. The workbench shows two of three pallets and missing `DEMO-P003`.
+Open **http://127.0.0.1:8080** using that exact host. Paste your locally generated operator token into the login screen. Observe 2/3 pallets and missing P003.
 
 ```sh
 .venv/bin/quayready correct
 ```
 
-Refresh. Readiness becomes eligible at evidence version 4. Create a proposal. The operator deliberately also has the reviewer role: try approving their own proposal to observe the server's `SELF_APPROVAL` rejection. Sign out, obtain the separate reviewer's token, sign in and approve:
+Refresh: evidence v4 becomes eligible. Create a proposal. Attempt self-approval to observe `SELF_APPROVAL`: the operator intentionally also has the reviewer role, so the server proves that role membership cannot bypass stable-subject separation. Sign out and obtain a genuinely different identity:
 
 ```sh
 .venv/bin/quayready credentials --role reviewer
+```
+
+Sign in as reviewer and approve. The request is **QUEUED**, not yet delivered. Then run:
+
+```sh
 .venv/bin/quayready worker --once
 ```
 
-Refresh to see `CONFIRMED` and the independent target receipt. Approval alone leaves a durable `QUEUED` request; only the worker sends it. `worker` without `--once` runs continuously.
+Refresh for the independent target receipt. `worker` without `--once` loops. The workbench displays actual persisted state, not a scripted success screen.
 
-## Demonstrate lost-response recovery
+## Failure and recovery demo
 
-Use a **new run** to preserve the previous evidence. Stop only the QuayReady processes you started. Use the same `--directory` on every command in this example, including `seed`, `correct` and `credentials`.
+Preserve previous evidence by choosing a new run. Stop only processes you started. Use the same `--directory` with **every command**:
 
 ```sh
 .venv/bin/quayready init --directory .runs/lost-response
 .venv/bin/quayready serve --directory .runs/lost-response
 ```
 
-In another terminal, start the target with the explicit test fault:
+In another terminal:
 
 ```sh
 QUAYREADY_TARGET_FAULT=drop-after-commit .venv/bin/quayready target --directory .runs/lost-response
 ```
 
-Repeat seed → correct → operator proposal → independent reviewer approval for this run. Run `worker --directory .runs/lost-response --once`: the target commits, then deliberately truncates its HTTP response. The UI reports `RETRY_WAIT`, not success. Wait at least two seconds and run the same worker command again: a GET lookup confirms the original receipt. The target fault intentionally produces an h11 protocol-error log after committing; that is the injected fault, not a failed target transaction.
+Repeat seed → correct → operator proposal → independent reviewer approval for that directory. Run `worker --directory .runs/lost-response --once`. The target really commits, then intentionally truncates the HTTP response; the app shows **RETRY_WAIT**, never assumed success. Wait at least two seconds, then run the worker command again: GET of the original dispatch ID confirms its original receipt. The injected target fault intentionally emits a protocol-error log after commit.
 
-The automated test also terminates and restarts the worker process between these steps and checks that the target effect count is exactly one. See [tests](tests/test_process_recovery.py) and [failure behaviour](docs/implementation.md).
+Automatic budgets are three reserved POSTs and three lookups. Terminal uncertainty stops in MANUAL_REVIEW. A reviewer can use **Look up target receipt** for one bounded GET-only investigation. It never resends, resets counters or removes the dispatch barrier without a matching receipt. An absent receipt is still uncertainty, not proof that an in-flight request can never arrive.
 
-## Verify
+A genuine [captioned walkthrough](evidence/rc/video/walkthrough.webm) and [transcript](docs/demo-transcript.md) show the local scenario, including lost response and a new worker process. No visible credentials, voiceover or fictional target animation is included.
+
+## Architecture
+
+![Source, app and target ownership](showcase/assets/architecture.svg)
+
+One Python codebase contains the FastAPI/Jinja workbench, pure domain rules, explicit SQL store, worker and separate mock target. **app.db** owns evidence/review/outbox/audit; **target.db** owns trusted synthetic orders and unique target effects. Only local HTTP crosses that integration boundary.
+
+App migration 001 is preserved. Target migration 002 validates E1 DDL before adding checked migration history and retains existing effects. Unknown/drifted schemas stop startup. No network occurs in an open app transaction; results use generation fencing.
+
+Technology: Python, FastAPI, Jinja, explicit SQLite, minimal browser JavaScript, pytest, real local HTTP and pinned GitHub Actions. The public showcase uses vanilla JavaScript/CSS plus a small Python static exporter. No React, cloud platform, broker or microservices infrastructure is needed.
+
+## Verify and inspect evidence
 
 ```sh
 .venv/bin/python scripts/verify.py
-.venv/bin/pip-audit --format json --output evidence/dependency-audit.json
+.venv/bin/python -m pip_audit --format json --output evidence/rc/dependency-audit.json
+npm audit --audit-level=low
 ```
 
-The first command runs formatting/lint/type/dependency checks and the full real-browser/HTTP test suite, writes JUnit and execution metadata, and checks local secret canaries and documentation links. Tests start and terminate only their own processes on temporary ports. Browser binaries must already be installed. The audit command queries public advisories; it requires network access. No GitHub Actions result or CI badge is claimed.
+The first command runs formatting, linting, mypy, dependency integrity, Bandit, package build, all tests, static export, relative-link checks and local secret canaries. It starts only test-owned processes on temporary loopback ports. Chromium and `npm ci` are required. Advisory scans require network access and are recorded separately.
 
-## Architecture and scope
+Original E1 evidence remains under `evidence/`. New release evidence is under `evidence/rc/`, identified by the tested input-tree fingerprint and actual commands. [Release verification](docs/release-verification.md) explains results, resolved defects, incomplete/manual checks and limits. [Historical E1 verification](docs/verification.md) remains available.
 
-```mermaid
-flowchart LR
-    Sources[Synthetic order / WMS / documents] -->|authenticated JSON HTTP| App[FastAPI + pure readiness + Jinja workbench]
-    People[Operator and independent reviewer] -->|session + CSRF| App
-    App --> DB[(app.db: receipts / snapshots / review / outbox / audit)]
-    Worker[Worker process: reserve, HTTP, fenced result] <--> DB
-    Worker -->|local HTTP POST / GET| Target[Independent mock-TMS process]
-    Target --> TargetDB[(target.db: trusted orders / unique effects / receipts)]
-```
+Verification Actions use upstream SHA pins and read-only repository permissions. The separately dispatched Pages workflow grants Pages/OIDC write only to its deploy job and publishes only the approved static export, with no production secrets. No hosted success badge is claimed before an actual run. Automated accessibility checks supplement real keyboard, responsive and visual review; no WCAG certification or professional penetration test is claimed.
 
-One maintainable Python package, two independently restartable HTTP processes and a worker. No shared-database integration. Explicit parameterised SQL and one versioned migration per database. No AI decision engine, OCR, AGV/PLC control, vendor integration, public deployment or large frontend framework.
+## Security and limitations
 
-Read [implementation decisions](docs/implementation.md), [verification and limits](docs/verification.md), [learning exercises](docs/learning.md), [next phase](docs/next-phase.md) and [artifact provenance](docs/provenance.md). The neutral [OpenAPI 3.1.1 contract](src/quayready/contracts/openapi.json) and SQL migrations are included; private research is not.
+Random local credentials stay in ignored `.runs/`, with restrictive directory/file permissions. Stable subjects, role/site filtering, exact Origin/Host, CSRF, strict bounded JSON, parameterised SQL, escaped output and CSP protect the local demonstration. Session/config repr excludes secret fields. See [SECURITY](SECURITY.md).
 
-## Troubleshooting and limitations
+The default **domain clock is fixed at 2026-11-02 11:40 UTC**. Worker deadlines/leases/retries and sessions use real time. Frozen domain time makes the scenario reproducible; it is not live warehouse freshness. Sessions expire after 30 minutes and restart requires sign-in. Loopback HTTP omits the Secure cookie attribute; production identity/transport must be designed separately.
 
-- `init` refuses to overwrite an existing run. Reset by choosing a **new** `--directory`; old databases and evidence remain. No automatic destructive reset or migration downgrade.
-- Port busy: initialise a new run with `--app-port 18080 --target-port 18081`. Use its directory on every command and open its exact origin. Never stop an unrelated process.
-- `QUAYREADY_CONFIG`, if explicitly set, takes precedence over `--directory`; unset it when switching runs. Config and databases live under ignored `.runs/`, with random tokens and restrictive permissions. Never commit them.
-- The default **domain clock is fixed at 2026-11-02 11:40 UTC** so the demo stays reproducible. Worker leases, retry timing and sessions use the real clock. This does not model live warehouse freshness. Boundary tests inject the clock deliberately.
-- Sessions are local, in-memory and expire after 30 minutes; restart requires signing in again. Plain HTTP cookies omit `Secure` only for this loopback demonstration. No SSO, production compliance or hostile-local-admin protection is claimed.
-- SQLite is single-writer; bounded lock waits can return `503`. There is no automatic retry of an inbound mutation with a new identifier.
-- Terminal uncertainty needs human investigation. A GET-only manual reconciliation command and fuller malformed-target/SSRF/security coverage belong to E2; there is deliberately no force-send or counter-reset button.
-- Tested on macOS arm64. Linux/Windows, a second person's cold start and independent owner mastery remain unverified. Starlette currently emits a deprecation warning for its httpx-based TestClient; real HTTP/browser tests provide separate verification.
+SQLite remains single-writer. Local administrators can alter files and audit protections. No production availability, privacy/compliance certification, real-world ROI, physical departure or customs authority is inferred. A second person's cold start, human security review and the owner's independent mastery remain open human gates.
 
-MIT licensed. Locally operated, synthetic and independently branded.
+## Developer guide and troubleshooting
+
+- `init` refuses to overwrite an existing run. Reset means `init --directory NEW`, retaining old evidence. There is no destructive downgrade or counter-reset button.
+- If ports are occupied, initialise with `--app-port 18080 --target-port 18081`; use that directory everywhere and the exact new origin. Never stop unrelated processes.
+- Explicit `QUAYREADY_CONFIG` takes precedence over `--directory`; unset it before switching runs.
+- After frontend edits: `npm run format`. After Python edits: `.venv/bin/ruff format src tests scripts`. Run the verification command before committing.
+- Regenerate original social art with `python scripts/render_assets.py`; reproduce the real recording with `python scripts/record_demo.py`. These use local browsers and owned processes. Normal verification does not repeatedly record a 100-second video.
+- Builds and run data are ignored; do not commit `.runs/`, `node_modules/`, package build intermediates or tokens. Public export is allowlisted and checked for stale extra files.
+
+## Documentation and learning
+
+| Purpose | Document |
+|---|---|
+| Business problem, results and reflection | [Case study](docs/case-study.md) |
+| System context, data flow, schema and recovery | [Architecture](docs/architecture.md) · [Implementation](docs/implementation.md) |
+| HTTP contracts | [OpenAPI 3.1.1](src/quayready/contracts/openapi.json) |
+| Verification, security and honest limits | [Release evidence](docs/release-verification.md) · [SECURITY](SECURITY.md) |
+| Demo and interview explanation | [Transcript](docs/demo-transcript.md) · [Mastery exercises](docs/learning.md) · [Interview package](docs/interview-package.md) |
+| Product identity and accessibility | [Design system](docs/design-system.md) |
+| Publication, release and reusable portfolio text | [Publication mechanism](docs/publication.md) · [Release closure](docs/release-closure.md) · [Portfolio description](docs/portfolio-description.md) |
+| Version changes | [Changelog](CHANGELOG.md) · [Release notes](docs/release-notes.md) |
+| Contributions and neutral provenance | [Contributing](CONTRIBUTING.md) · [Provenance](docs/provenance.md) |
+
+AI-generated code and material do not prove personal expertise. Start with an unaided SQL query, a boundary test, two-session self-approval rejection and a narrated timeout recovery. Record assistance honestly.
+
+MIT licensed. The private research/strategy repository is separate and untouched. No unrelated portfolio code or proprietary documents were copied.

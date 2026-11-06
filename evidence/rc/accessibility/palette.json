@@ -1,0 +1,47 @@
+{
+  "kind": "selected authored token pairs, not pixel-complete or WCAG certification",
+  "pairs": [
+    {
+      "pair": "body",
+      "foreground": "#172e40",
+      "background": "#f4f7f9",
+      "ratio": 13.0
+    },
+    {
+      "pair": "muted",
+      "foreground": "#496171",
+      "background": "#ffffff",
+      "ratio": 6.5
+    },
+    {
+      "pair": "button",
+      "foreground": "#ffffff",
+      "background": "#183b53",
+      "ratio": 11.74
+    },
+    {
+      "pair": "green",
+      "foreground": "#23624e",
+      "background": "#e8f4ed",
+      "ratio": 6.35
+    },
+    {
+      "pair": "amber",
+      "foreground": "#85520b",
+      "background": "#fff3dc",
+      "ratio": 5.95
+    },
+    {
+      "pair": "red",
+      "foreground": "#a1323a",
+      "background": "#fff0f0",
+      "ratio": 6.26
+    },
+    {
+      "pair": "rail",
+      "foreground": "#c6d6e1",
+      "background": "#183b53",
+      "ratio": 7.88
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+running egg_info
+writing src/quayready.egg-info/PKG-INFO
+writing dependency_links to src/quayready.egg-info/dependency_links.txt
+writing entry points to src/quayready.egg-info/entry_points.txt
+writing requirements to src/quayready.egg-info/requires.txt
+writing top-level names to src/quayready.egg-info/top_level.txt
+reading manifest file 'src/quayready.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file 'src/quayready.egg-info/SOURCES.txt'
+running sdist
+running egg_info
+writing src/quayready.egg-info/PKG-INFO
+writing dependency_links to src/quayready.egg-info/dependency_links.txt
+writing entry points to src/quayready.egg-info/entry_points.txt
+writing requirements to src/quayready.egg-info/requires.txt
+writing top-level names to src/quayready.egg-info/top_level.txt
+reading manifest file 'src/quayready.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file 'src/quayready.egg-info/SOURCES.txt'
+running check
+creating quayready-0.2.0rc1
+creating quayready-0.2.0rc1/src/quayready
+creating quayready-0.2.0rc1/src/quayready.egg-info
+creating quayready-0.2.0rc1/src/quayready/contracts
+creating quayready-0.2.0rc1/src/quayready/static
+creating quayready-0.2.0rc1/src/quayready/templates
+creating quayready-0.2.0rc1/tests
+copying files to quayready-0.2.0rc1...
+copying LICENSE -> quayready-0.2.0rc1
+copying README.md -> quayready-0.2.0rc1
+copying pyproject.toml -> quayready-0.2.0rc1
+copying src/quayready/__init__.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready/api.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready/cli.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready/common.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready/config.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready/db.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready/domain.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready/store.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready/worker.py -> quayready-0.2.0rc1/src/quayready
+copying src/quayready.egg-info/PKG-INFO -> quayready-0.2.0rc1/src/quayready.egg-info
+copying src/quayready.egg-info/SOURCES.txt -> quayready-0.2.0rc1/src/quayready.egg-info
+copying src/quayready.egg-info/dependency_links.txt -> quayready-0.2.0rc1/src/quayready.egg-info
+copying src/quayready.egg-info/entry_points.txt -> quayready-0.2.0rc1/src/quayready.egg-info
+copying src/quayready.egg-info/requires.txt -> quayready-0.2.0rc1/src/quayready.egg-info
+copying src/quayready.egg-info/top_level.txt -> quayready-0.2.0rc1/src/quayready.egg-info
+copying src/quayready/contracts/001-app.sql -> quayready-0.2.0rc1/src/quayready/contracts
+copying src/quayready/contracts/001-target.sql -> quayready-0.2.0rc1/src/quayready/contracts
+copying src/quayready/contracts/002-target-integrity.sql -> quayready-0.2.0rc1/src/quayready/contracts
+copying src/quayready/contracts/openapi.json -> quayready-0.2.0rc1/src/quayready/contracts
+copying src/quayready/static/favicon.svg -> quayready-0.2.0rc1/src/quayready/static
+copying src/quayready/static/style.css -> quayready-0.2.0rc1/src/quayready/static
+copying src/quayready/static/workbench.js -> quayready-0.2.0rc1/src/quayready/static
+copying src/quayready/templates/workbench.html -> quayready-0.2.0rc1/src/quayready/templates
+copying tests/test_acceptance.py -> quayready-0.2.0rc1/tests
+copying tests/test_browser.py -> quayready-0.2.0rc1/tests
+copying tests/test_contracts.py -> quayready-0.2.0rc1/tests
+copying tests/test_design_tokens.py -> quayready-0.2.0rc1/tests
+copying tests/test_execution_context.py -> quayready-0.2.0rc1/tests
+copying tests/test_hardening.py -> quayready-0.2.0rc1/tests
+copying tests/test_process_recovery.py -> quayready-0.2.0rc1/tests
+copying tests/test_recovery.py -> quayready-0.2.0rc1/tests
+copying tests/test_response_matrix.py -> quayready-0.2.0rc1/tests
+copying tests/test_security_contracts.py -> quayready-0.2.0rc1/tests
+copying tests/test_showcase.py -> quayready-0.2.0rc1/tests
+Writing quayready-0.2.0rc1/setup.cfg
+Creating tar archive
+removing 'quayready-0.2.0rc1' (and everything under it)
+running egg_info
+writing src/quayready.egg-info/PKG-INFO
+writing dependency_links to src/quayready.egg-info/dependency_links.txt
+writing entry points to src/quayready.egg-info/entry_points.txt
+writing requirements to src/quayready.egg-info/requires.txt
+writing top-level names to src/quayready.egg-info/top_level.txt
+reading manifest file 'src/quayready.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file 'src/quayready.egg-info/SOURCES.txt'
+running bdist_wheel
+running build
+running build_py
+creating build/lib/quayready
+copying src/quayready/worker.py -> build/lib/quayready
+copying src/quayready/store.py -> build/lib/quayready
+copying src/quayready/db.py -> build/lib/quayready
+copying src/quayready/config.py -> build/lib/quayready
+copying src/quayready/domain.py -> build/lib/quayready
+copying src/quayready/__init__.py -> build/lib/quayready
+copying src/quayready/api.py -> build/lib/quayready
+copying src/quayready/cli.py -> build/lib/quayready
+copying src/quayready/common.py -> build/lib/quayready
+running egg_info
+writing src/quayready.egg-info/PKG-INFO
+writing dependency_links to src/quayready.egg-info/dependency_links.txt
+writing entry points to src/quayready.egg-info/entry_points.txt
+writing requirements to src/quayready.egg-info/requires.txt
+writing top-level names to src/quayready.egg-info/top_level.txt
+reading manifest file 'src/quayready.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file 'src/quayready.egg-info/SOURCES.txt'
+creating build/lib/quayready/contracts
+copying src/quayready/contracts/001-app.sql -> build/lib/quayready/contracts
+copying src/quayready/contracts/001-target.sql -> build/lib/quayready/contracts
+copying src/quayready/contracts/002-target-integrity.sql -> build/lib/quayready/contracts
+copying src/quayready/contracts/openapi.json -> build/lib/quayready/contracts
+creating build/lib/quayready/templates
+copying src/quayready/templates/workbench.html -> build/lib/quayready/templates
+creating build/lib/quayready/static
+copying src/quayready/static/style.css -> build/lib/quayready/static
+copying src/quayready/static/workbench.js -> build/lib/quayready/static
+copying src/quayready/static/favicon.svg -> build/lib/quayready/static
+installing to build/bdist.macosx-15.0-arm64/wheel
+running install
+running install_lib
+creating build/bdist.macosx-15.0-arm64/wheel
+creating build/bdist.macosx-15.0-arm64/wheel/quayready
+copying build/lib/quayready/worker.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+copying build/lib/quayready/store.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+copying build/lib/quayready/db.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+copying build/lib/quayready/config.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+copying build/lib/quayready/domain.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+creating build/bdist.macosx-15.0-arm64/wheel/quayready/contracts
+copying build/lib/quayready/contracts/001-app.sql -> build/bdist.macosx-15.0-arm64/wheel/./quayready/contracts
+copying build/lib/quayready/contracts/001-target.sql -> build/bdist.macosx-15.0-arm64/wheel/./quayready/contracts
+copying build/lib/quayready/contracts/002-target-integrity.sql -> build/bdist.macosx-15.0-arm64/wheel/./quayready/contracts
+copying build/lib/quayready/contracts/openapi.json -> build/bdist.macosx-15.0-arm64/wheel/./quayready/contracts
+copying build/lib/quayready/__init__.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+copying build/lib/quayready/api.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+copying build/lib/quayready/cli.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+copying build/lib/quayready/common.py -> build/bdist.macosx-15.0-arm64/wheel/./quayready
+creating build/bdist.macosx-15.0-arm64/wheel/quayready/static
+copying build/lib/quayready/static/style.css -> build/bdist.macosx-15.0-arm64/wheel/./quayready/static
+copying build/lib/quayready/static/workbench.js -> build/bdist.macosx-15.0-arm64/wheel/./quayready/static
+copying build/lib/quayready/static/favicon.svg -> build/bdist.macosx-15.0-arm64/wheel/./quayready/static
+creating build/bdist.macosx-15.0-arm64/wheel/quayready/templates
+copying build/lib/quayready/templates/workbench.html -> build/bdist.macosx-15.0-arm64/wheel/./quayready/templates
+running install_egg_info
+Copying src/quayready.egg-info to build/bdist.macosx-15.0-arm64/wheel/./quayready-0.2.0rc1-py3.13.egg-info
+running install_scripts
+creating build/bdist.macosx-15.0-arm64/wheel/quayready-0.2.0rc1.dist-info/WHEEL
+creating '/Users/philippegodfroy/quayready/dist/.tmp-tuwd0q9z/quayready-0.2.0rc1-py3-none-any.whl' and adding 'build/bdist.macosx-15.0-arm64/wheel' to it
+adding 'quayready/__init__.py'
+adding 'quayready/api.py'
+adding 'quayready/cli.py'
+adding 'quayready/common.py'
+adding 'quayready/config.py'
+adding 'quayready/db.py'
+adding 'quayready/domain.py'
+adding 'quayready/store.py'
+adding 'quayready/worker.py'
+adding 'quayready/contracts/001-app.sql'
+adding 'quayready/contracts/001-target.sql'
+adding 'quayready/contracts/002-target-integrity.sql'
+adding 'quayready/contracts/openapi.json'
+adding 'quayready/static/favicon.svg'
+adding 'quayready/static/style.css'
+adding 'quayready/static/workbench.js'
+adding 'quayready/templates/workbench.html'
+adding 'quayready-0.2.0rc1.dist-info/licenses/LICENSE'
+adding 'quayready-0.2.0rc1.dist-info/METADATA'
+adding 'quayready-0.2.0rc1.dist-info/WHEEL'
+adding 'quayready-0.2.0rc1.dist-info/entry_points.txt'
+adding 'quayready-0.2.0rc1.dist-info/top_level.txt'
+adding 'quayready-0.2.0rc1.dist-info/RECORD'
+removing build/bdist.macosx-15.0-arm64/wheel
+Successfully built quayready-0.2.0rc1.tar.gz and quayready-0.2.0rc1-py3-none-any.whl
+* Getting build dependencies for sdist...
+* Building sdist...
+* Building wheel from sdist
+* Getting build dependencies for wheel...
+* Building wheel...

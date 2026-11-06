@@ -17,20 +17,52 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def execution_context() -> dict[str, str | None]:
+    hosted = os.getenv("GITHUB_ACTIONS") == "true"
+    repository = os.getenv("GITHUB_REPOSITORY", "")
+    run = os.getenv("GITHUB_RUN_ID", "")
+    valid = bool(
+        re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9][A-Za-z0-9_.-]*", repository)
+    ) and bool(re.fullmatch(r"[0-9]{1,20}", run))
+    return {
+        "executionEnvironment": "GITHUB_ACTIONS" if hosted else "LOCAL",
+        "hostedRunUrl": f"https://github.com/{repository}/actions/runs/{run}"
+        if hosted and valid
+        else None,
+    }
+
+
 def artifacts() -> list[Path]:
-    paths = [ROOT / "pyproject.toml", ROOT / "requirements-dev.lock"]
-    for directory in ("src", "tests", "scripts"):
+    paths = [
+        ROOT / name
+        for name in (
+            "pyproject.toml",
+            "requirements-dev.lock",
+            "package.json",
+            "package-lock.json",
+            "README.md",
+            "LICENSE",
+            "CHANGELOG.md",
+            "CONTRIBUTING.md",
+            "SECURITY.md",
+            ".gitignore",
+        )
+    ]
+    for directory in ("src", "tests", "scripts", "showcase", ".github", "docs"):
         paths.extend(
             p
             for p in (ROOT / directory).rglob("*")
-            if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc"
+            if p.is_file()
+            and "__pycache__" not in p.parts
+            and p.suffix != ".pyc"
+            and not any(part.endswith(".egg-info") for part in p.parts)
         )
     return sorted(paths)
 
 
 def main() -> int:
     os.chdir(ROOT)
-    destination = ROOT / "evidence"
+    destination = ROOT / "evidence/rc"
     (destination / "checks").mkdir(parents=True, exist_ok=True)
     fingerprints = [
         {"artifact": str(p.relative_to(ROOT)), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
@@ -39,6 +71,7 @@ def main() -> int:
     fingerprint = hashlib.sha256(json.dumps(fingerprints, sort_keys=True).encode()).hexdigest()
     head = subprocess.run(["git", "rev-parse", "--verify", "HEAD"], capture_output=True, text=True)
     report = {
+        **execution_context(),
         "executedAt": datetime.now(timezone.utc).isoformat(),
         "workingTreeIdentifier": fingerprint,
         "gitHeadAtExecution": head.stdout.strip() if head.returncode == 0 else None,
@@ -51,6 +84,7 @@ def main() -> int:
                 "fastapi",
                 "starlette",
                 "httpx",
+                "httpx2",
                 "uvicorn",
                 "jsonschema",
                 "jinja2",
@@ -70,7 +104,11 @@ def main() -> int:
         ("format", [sys.executable, "-m", "ruff", "format", "--check", "src", "tests", "scripts"]),
         ("mypy", [sys.executable, "-m", "mypy", "src"]),
         ("dependencies", [sys.executable, "-m", "pip", "check"]),
-        ("pytest", [sys.executable, "-m", "pytest", "-q", "--junitxml=evidence/pytest.xml"]),
+        ("frontend-format", ["npm", "run", "check"]),
+        ("bandit", [sys.executable, "-m", "bandit", "-r", "src", "-q"]),
+        ("package", [sys.executable, "-m", "build", "--no-isolation"]),
+        ("pytest", [sys.executable, "-m", "pytest", "-q", "--junitxml=evidence/rc/pytest.xml"]),
+        ("showcase", [sys.executable, "scripts/build_showcase.py"]),
     ]
     success = True
     for name, command in commands:
@@ -78,14 +116,20 @@ def main() -> int:
             command,
             capture_output=True,
             text=True,
-            env={**os.environ, "QUAYREADY_EVIDENCE": "evidence/ui"},
+            env={
+                **os.environ,
+                "QUAYREADY_EVIDENCE": "evidence/rc/ui",
+                "QUAYREADY_FULL_CONTRACT_GATE": "1",
+            },
         )
         output = result.stdout + result.stderr
         (destination / "checks" / (name + ".txt")).write_text(output)
         report["checks"].append(
             {
                 "name": name,
-                "command": " ".join(["python", *command[1:]]),
+                "command": " ".join(
+                    ["python" if command[0] == sys.executable else command[0], *command[1:]]
+                ),
                 "exitCode": result.returncode,
             }
         )
@@ -114,6 +158,9 @@ def main() -> int:
                 ".pytest_cache",
                 ".mypy_cache",
                 ".ruff_cache",
+                "node_modules",
+                "dist",
+                "build",
             )
             or part.endswith(".egg-info")
             for part in p.relative_to(ROOT).parts
@@ -144,12 +191,37 @@ def main() -> int:
             {"name": "documentation-links", "broken": broken, "exitCode": int(bool(broken))},
         ]
     )
-    success = success and not leaked and not broken
+    changed = [
+        p["artifact"]
+        for p in fingerprints
+        if hashlib.sha256((ROOT / p["artifact"]).read_bytes()).hexdigest() != p["sha256"]
+    ]
+    report["checks"].append(
+        {"name": "tested-input-integrity", "changed": changed, "exitCode": int(bool(changed))}
+    )
+    success = success and not leaked and not broken and not changed
     report["result"] = "PASS" if success else "FAIL"
     (destination / "execution.json").write_text(json.dumps(report, indent=2) + "\n")
     print(
         f"canaries: {len(secrets)} checked; links: {len(broken)} broken; result: {report['result']}"
     )
+    if success:
+        # Export the JUST-recorded result, rather than shipping an earlier run's metadata.
+        final = subprocess.run(
+            [sys.executable, "scripts/build_showcase.py"], capture_output=True, text=True
+        )
+        (destination / "checks/final-export.txt").write_text(final.stdout + final.stderr)
+        if final.returncode:
+            report["result"] = "FAIL"
+            success = False
+        report["checks"].append(
+            {
+                "name": "final-evidence-export",
+                "command": "python scripts/build_showcase.py",
+                "exitCode": final.returncode,
+            }
+        )
+        (destination / "execution.json").write_text(json.dumps(report, indent=2) + "\n")
     return 0 if success else 1
 
 

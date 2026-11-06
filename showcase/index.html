@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QuayReady — evidence before action</title>
+    <meta
+      name="description"
+      content="A working logistics integration case study: reconcile three pallets, require independent review and recover a request across a real HTTP boundary."
+    />
+    <meta property="og:title" content="QuayReady — evidence before action" />
+    <meta
+      property="og:description"
+      content="A synthetic logistics integration lab with independent approvals and verified recovery."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/social.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'"
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to case study</a>
+    <header>
+      <a class="brand" href="#main"
+        ><span class="mark" aria-hidden="true">Q</span> QuayReady</a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#workflow">Experience the workflow</a
+        ><a href="#architecture">Architecture</a><a href="#evidence">Evidence</a
+        ><a href="guide.html">Technical guide</a>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="project-type">
+            Independent software engineering case study
+          </p>
+          <h1 id="hero-title">Evidence<br />before action.</h1>
+          <p class="lead">
+            Reliable logistics integration, from warehouse evidence to transport
+            review.
+          </p>
+          <p>
+            A practical cross-dock lab built around one question: can we trust
+            the evidence behind this request?
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#workflow">Explore the demo</a
+            ><a class="button secondary" href="#architecture"
+              >View architecture</a
+            >
+          </div>
+          <p class="honesty">
+            Synthetic data. Real Python application. Independently persisted
+            mock target.
+          </p>
+        </div>
+        <figure class="hero-product">
+          <div class="window-bar">
+            <span>QuayReady / actual application</span
+            ><span>Local execution</span>
+          </div>
+          <img
+            src="assets/hero.jpg"
+            width="1440"
+            height="1000"
+            alt="Genuine QuayReady workbench capture showing three observed pallets, review and delivery state"
+            fetchpriority="high"
+          />
+          <figcaption>
+            Genuine application capture. The interactive examples below are
+            explicitly labelled simulations.
+          </figcaption>
+        </figure>
+      </section>
+      <section class="problem" aria-labelledby="problem-title">
+        <div>
+          <p class="section-number">The operational question</p>
+          <h2 id="problem-title">
+            Three expected.<br />Two observed.<br />One unresolved decision.
+          </h2>
+        </div>
+        <div>
+          <p>
+            Orders, warehouse observations and document status belong to
+            different systems. If they disagree, a confident-looking dashboard
+            can conceal uncertainty.
+          </p>
+          <p>
+            QuayReady reconciles the latest evidence, explains the discrepancy
+            and binds a human review to the exact evidence version. Only then
+            can an integration request be queued.
+          </p>
+          <p class="aside">
+            This is an illustrative logistics problem, not a claim about any
+            real company's internal processes. A dispatch-review request never
+            authorises physical departure.
+          </p>
+        </div>
+      </section>
+      <section id="workflow" aria-labelledby="workflow-title">
+        <div class="section-intro">
+          <div>
+            <p class="section-number">Follow one shipment</p>
+            <h2 id="workflow-title">From discrepancy to reviewed request.</h2>
+          </div>
+          <p>
+            Interactive simulation — based on the verified QuayReady workflow.
+            No Python backend or private server is called.
+          </p>
+        </div>
+        <p class="notice no-js">
+          Interactive controls are unavailable while JavaScript is disabled or
+          blocked. The complete workflow and architecture remain readable below.
+        </p>
+        <div class="workflow-grid">
+          <div class="simulation">
+            <div class="sim-top">
+              <span id="sim-step">Step 1 of 11</span
+              ><span class="tag">Synthetic simulation</span>
+            </div>
+            <h3 id="sim-title">Order created</h3>
+            <p id="sim-description">
+              A synthetic transport order expects three pallet identifiers.
+            </p>
+            <ul class="pallet-grid" id="sim-pallets">
+              <li>DEMO-P001 <span>Expected</span></li>
+              <li>DEMO-P002 <span>Expected</span></li>
+              <li>DEMO-P003 <span>Expected</span></li>
+            </ul>
+            <dl class="sim-states">
+              <div>
+                <dt>Readiness</dt>
+                <dd id="sim-readiness">Needs review</dd>
+              </div>
+              <div>
+                <dt>Human review</dt>
+                <dd id="sim-review">Not requested</dd>
+              </div>
+              <div>
+                <dt>Delivery</dt>
+                <dd id="sim-delivery">Not requested</dd>
+              </div>
+            </dl>
+            <p id="sim-announcement" class="sr-only" aria-live="polite"></p>
+            <div class="sim-controls">
+              <button id="sim-back" class="secondary" disabled>Previous</button
+              ><button id="sim-next">Next step</button
+              ><button id="sim-reset" class="text-button">
+                Reset workflow
+              </button>
+            </div>
+          </div>
+          <ol class="workflow-steps">
+            <li>Order created with three expected pallets.</li>
+            <li>Expected pallet identifiers registered.</li>
+            <li>Warehouse snapshot contains two pallets.</li>
+            <li>P003 is reported missing; review is unavailable.</li>
+            <li>A higher source revision corrects the warehouse snapshot.</li>
+            <li>Fresh warehouse and document evidence make review eligible.</li>
+            <li>An operator creates a version-bound proposal.</li>
+            <li>A different subject approves the same evidence version.</li>
+            <li>Approval and outbox commit atomically.</li>
+            <li>
+              A worker sends the same immutable dispatch identifier over HTTP.
+            </li>
+            <li>
+              The independent mock-TMS receipt confirms the persisted request.
+            </li>
+          </ol>
+        </div>
+      </section>
+      <section id="recovery" class="recovery" aria-labelledby="recovery-title">
+        <div class="section-intro">
+          <div>
+            <p class="section-number">Failure & recovery lab</p>
+            <h2 id="recovery-title">
+              A timeout is a question.<br />Not an answer.
+            </h2>
+          </div>
+          <p>
+            Educational simulations. These timelines explain the protocol; they
+            are not recordings of test executions.
+            <a href="evidence.html">Inspect real verification evidence.</a>
+          </p>
+        </div>
+        <label for="incident">Choose an incident</label
+        ><select id="incident">
+          <option value="lost">Target commits; response is lost</option>
+          <option value="duplicate">Duplicate source message</option>
+          <option value="conflict">Conflicting replay</option>
+          <option value="stale">Stale evidence during review</option>
+          <option value="self">Self-approval attempt</option>
+          <option value="timeout">Target timeout and bounded retry</option>
+          <option value="restart">Worker restart after claim</option>
+        </select>
+        <div class="incident-layout">
+          <ol id="incident-timeline" class="incident-timeline">
+            <li>Request sent with stable dispatch ID.</li>
+            <li>Target commits one durable effect.</li>
+            <li>Client loses the response; outcome is unknown.</li>
+            <li>After restart, lookup finds the original receipt.</li>
+            <li>
+              App confirms historical delivery; target effect count remains one.
+            </li>
+          </ol>
+          <aside class="technical">
+            <h3>For engineers</h3>
+            <p id="incident-technical">
+              Reserve → COMMIT → HTTP → fenced result. An uncertain POST leads
+              to a GET of the same identifier. An idempotent target constrains
+              effects, even when requests repeat.
+            </p>
+            <p class="aside">
+              Bounded at-least-once attempts with an idempotent target effect
+              under this simulated contract. No universal exactly-once
+              guarantee.
+            </p>
+          </aside>
+        </div>
+      </section>
+      <section id="architecture" aria-labelledby="architecture-title">
+        <div class="section-intro">
+          <div>
+            <p class="section-number">System boundaries</p>
+            <h2 id="architecture-title">
+              One codebase.<br />Two owners of truth.
+            </h2>
+          </div>
+          <p>
+            The app owns evidence and review. The mock-TMS owns its effect and
+            receipt. They communicate over real local HTTP, never through a
+            shared integration table.
+          </p>
+        </div>
+        <img
+          class="diagram"
+          src="assets/architecture.svg"
+          width="1200"
+          height="620"
+          loading="lazy"
+          alt="Sources and people connect to FastAPI, domain rules and app SQLite. Its transactional outbox is read by a worker sending HTTP to a separate mock-TMS and separate target database."
+        />
+        <ol
+          class="mobile-boundary"
+          aria-label="High-level integration boundary"
+        >
+          <li>App evidence</li>
+          <li>Worker / HTTP</li>
+          <li>Target receipt</li>
+        </ol>
+        <div
+          class="component-buttons"
+          role="group"
+          aria-label="Explore architecture components"
+        >
+          <button data-component="sources" aria-pressed="true">
+            Synthetic sources</button
+          ><button data-component="api" aria-pressed="false">
+            FastAPI ingestion</button
+          ><button data-component="domain" aria-pressed="false">
+            Domain validation</button
+          ><button data-component="review" aria-pressed="false">
+            Operator / reviewer</button
+          ><button data-component="db" aria-pressed="false">
+            SQLite evidence</button
+          ><button data-component="outbox" aria-pressed="false">Outbox</button
+          ><button data-component="worker" aria-pressed="false">
+            Worker / HTTP</button
+          ><button data-component="target" aria-pressed="false">
+            Independent target
+          </button>
+        </div>
+        <div id="component-panel" class="component-panel" aria-live="polite">
+          <h3>Synthetic sources</h3>
+          <p>
+            Transport order, warehouse snapshots and document snapshots. Their
+            source identity and revisions are explicit; their truth is
+            simulated, not live warehouse data.
+          </p>
+        </div>
+        <details class="architecture-fallback">
+          <summary>Read all components without interactive selection</summary>
+          <dl>
+            <dt>Sources</dt>
+            <dd>
+              Order API, complete warehouse snapshots and document snapshots;
+              authenticated per source and site.
+            </dd>
+            <dt>FastAPI ingestion</dt>
+            <dd>
+              Validates strict JSON and identity, then commits
+              receipts/projections or rejects safely.
+            </dd>
+            <dt>Domain validation</dt>
+            <dd>
+              Pure deterministic rules calculate readiness and reasons. Unknown
+              evidence is not zero.
+            </dd>
+            <dt>Operator and reviewer</dt>
+            <dd>
+              Server-rendered workbench; stable subjects, session/CSRF and
+              independent review of a fixed evidence version.
+            </dd>
+            <dt>SQLite evidence</dt>
+            <dd>
+              App database owns immutable receipts, current source pointers,
+              proposals, decisions and audit.
+            </dd>
+            <dt>Outbox</dt>
+            <dd>
+              Immutable dispatch payload committed with approval. The database
+              owns durable counters, leases and barriers.
+            </dd>
+            <dt>Worker and HTTP</dt>
+            <dd>
+              Reserve, commit, send, fenced result. Lookup-first recovery with
+              bounded retries; no network in an app transaction.
+            </dd>
+            <dt>Independent mock-TMS</dt>
+            <dd>
+              Separate HTTP process and separate target database own unique
+              effects and persistent receipts. Commit may outlive the client's
+              response.
+            </dd>
+          </dl>
+        </details>
+      </section>
+      <section id="evidence" class="evidence" aria-labelledby="evidence-title">
+        <div class="section-intro">
+          <div>
+            <p class="section-number">Engineering quality</p>
+            <h2 id="evidence-title">Claims you can inspect.</h2>
+          </div>
+          <p>
+            Recorded execution evidence is distinct from this simulation.
+            Hosting origin and workflow status are reported separately below.
+          </p>
+        </div>
+        <div class="evidence-grid">
+          <div>
+            <strong data-test-count>Verified locally</strong
+            ><span>Automated test snapshot</span>
+          </div>
+          <div>
+            <strong>Real HTTP</strong
+            ><span>Separate process and target persistence</span>
+          </div>
+          <div>
+            <strong>Version-bound</strong
+            ><span>Independent, server-enforced review</span>
+          </div>
+          <div>
+            <strong>Recoverable</strong
+            ><span>Response loss, restart and fencing tests</span>
+          </div>
+        </div>
+        <p id="verification-date">
+          Detailed commands, runtime versions and limitations are in the bundled
+          evidence.
+        </p>
+        <div class="links">
+          <a href="evidence.html">Read verification report</a
+          ><a href="assets/verification.json">Download execution metadata</a
+          ><a href="assets/openapi.json">OpenAPI 3.1.1</a
+          ><a href="case-study.html">Employer case study</a>
+        </div>
+      </section>
+      <section id="decisions">
+        <div class="section-intro">
+          <div>
+            <p class="section-number">Business & technical decisions</p>
+            <h2>Small enough to explain.<br />Serious enough to question.</h2>
+          </div>
+          <p>
+            Build the smallest complete chain, then test its failure boundaries.
+            Infrastructure is justified by the problem, not by the portfolio.
+          </p>
+        </div>
+        <div class="decisions">
+          <details open>
+            <summary>Why deterministic rules instead of AI?</summary>
+            <p>
+              Pallet-set comparison, holds, freshness and cutoff boundaries need
+              predictable, explainable answers. Generative output adds
+              uncertainty without useful judgment here.
+            </p>
+          </details>
+          <details>
+            <summary>Why independent review?</summary>
+            <p>
+              Separation of duties makes the evidence version and accountable
+              subject explicit. It does not make uncertain evidence safe or
+              authorise physical departure.
+            </p>
+          </details>
+          <details>
+            <summary>Why SQLite and explicit SQL?</summary>
+            <p>
+              One local writer, inspectable transactions and real constraints
+              suit this lab. A real deployment would need workload sizing,
+              backup/restore design and operational ownership before choosing
+              its database.
+            </p>
+          </details>
+          <details>
+            <summary>Why an outbox and separate databases?</summary>
+            <p>
+              Approval must not commit without a durable dispatch request. The
+              target's receipt is its own fact; a network call cannot be made
+              atomic with the app's SQLite commit.
+            </p>
+          </details>
+          <details>
+            <summary>Why target idempotency?</summary>
+            <p>
+              Response loss cannot tell a client whether a request committed.
+              Stable IDs, content hashes and unique target effects make repeated
+              delivery safe under the agreed contract.
+            </p>
+          </details>
+          <details>
+            <summary>Why no microservices platform?</summary>
+            <p>
+              One maintainable application package plus an independent simulated
+              target demonstrates the actual boundary. Kubernetes, brokers and
+              more services would obscure this exercise.
+            </p>
+          </details>
+          <details>
+            <summary>What changes in a real enterprise?</summary>
+            <p>
+              Supplier contracts, identity/SSO, source authority, observability,
+              availability targets, backup exercises, support duties, privacy
+              assessment and operational change management need real
+              stakeholders and validation.
+            </p>
+          </details>
+        </div>
+      </section>
+      <section class="walkthrough" aria-labelledby="walkthrough-title">
+        <div>
+          <p class="section-number">Watch the real application</p>
+          <h2 id="walkthrough-title">Evidence on screen.</h2>
+          <p>
+            A genuine local browser walkthrough, with captions and a
+            <a href="transcript.html">text transcript</a>. It shows synthetic
+            application state; the target is independently persisted.
+          </p>
+        </div>
+        <div data-video><!-- VIDEO_SLOT --></div>
+      </section>
+      <section id="limits" class="limits">
+        <div>
+          <h2>Honest boundaries.</h2>
+          <p>Credibility includes what has not been proven.</p>
+        </div>
+        <ul>
+          <li>
+            Synthetic data and mock integrations; no real logistics deployment.
+          </li>
+          <li>
+            No production compliance certification or professional penetration
+            test.
+          </li>
+          <li>No physical departure authorisation or customs clearance.</li>
+          <li>No measured operational ROI, customer claims or endorsements.</li>
+          <li>
+            Local verification does not prove production availability or
+            personal mastery.
+          </li>
+        </ul>
+      </section>
+      <section id="about">
+        <div class="section-intro">
+          <div>
+            <p class="section-number">About the project</p>
+            <h2>Business judgment,<br />made inspectable.</h2>
+          </div>
+          <div>
+            <p>
+              An independent portfolio and learning project by Philippe Godfroy.
+              It connects business analysis with requirements, explicit data
+              ownership, reliable automation and practical software delivery.
+            </p>
+            <p>
+              AI assisted implementation and learning materials. Tests and
+              reproducible evidence support technical claims; they do not
+              establish professional client experience or independent personal
+              competence.
+            </p>
+            <a href="guide.html#learning">Explore the mastery exercises</a>
+          </div>
+        </div>
+      </section>
+      <section class="final-cta">
+        <h2>Follow the evidence.</h2>
+        <p>
+          Read the architecture, inspect the tests, or reproduce the real
+          three-pallet workflow locally.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="guide.html">Technical README & setup</a
+          ><a class="button secondary" href="architecture.html"
+            >Architecture guide</a
+          ><a class="button secondary" href="evidence.html"
+            >Verification evidence</a
+          >
+        </div>
+        <p class="aside">
+          The application source remains private. This public showcase includes
+          independently usable simulations and approved technical guides.
+        </p>
+        <!-- SOURCE_LINK -->
+      </section>
+    </main>
+    <footer>
+      <a class="brand" href="#main"
+        ><span class="mark" aria-hidden="true">Q</span> QuayReady</a
+      >
+      <p>
+        QuayReady 0.2.0rc1 · Independent synthetic integration lab. Original
+        code, diagrams and interface under MIT. No analytics. No company
+        affiliation.
+        <a href="https://github.com/phlppgdfry" rel="noreferrer"
+          >Developer on GitHub</a
+        >. <a href="LICENSE.txt">MIT license</a>.
+      </p>
+    </footer>
+  </body>
+</html>

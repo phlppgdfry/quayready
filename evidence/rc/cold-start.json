@@ -1,0 +1,15 @@
+{
+  "kind": "fresh lock-installed environment, final built wheel installed; same Mac, not second-person/Linux validation",
+  "wheel": "quayready-0.2.0rc1-py3-none-any.whl",
+  "wheelSha256": "1329241e25d9fe4c499eab2564c9f4a97f0f280d9a1c222e5b889819acb0cabc",
+  "sourceMatchesWheel": true,
+  "installExitCode": 0,
+  "initExitCode": 0,
+  "appReady": 200,
+  "targetReady": 200,
+  "landing": 200,
+  "assets": "PASS",
+  "processes": "only owned processes started/terminated",
+  "credentials": "never printed/exported",
+  "finalArchiveInstallAndHTTPRetest": "PASS; no-index install of current archive and new isolated startup"
+}

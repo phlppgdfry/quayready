@@ -261,6 +261,8 @@ class Store:
                 (p.site, sid, kind),
             ).fetchone()
             if cur:
+                if cur["source_id"] != p.subject:
+                    raise Problem(403, "FORBIDDEN", "Snapshot source identity is already bound")
                 if revision < cur["source_revision"]:
                     result = "STALE_IGNORED"
                 elif revision == cur["source_revision"]:
@@ -302,7 +304,8 @@ class Store:
             ),
         )
         if kind != "ORDER" and result == "APPLIED":
-            assert observed is not None
+            if observed is None:
+                raise RuntimeError("Snapshot observation required")
             c.execute(
                 "INSERT INTO source_snapshots VALUES(?,?,?,?,?,?,?,?,?,?,?,NULL) ON CONFLICT(site_id,shipment_id,kind) DO UPDATE SET receipt_id=excluded.receipt_id,source_revision=excluded.source_revision,observed_at_ms=excluded.observed_at_ms,valid_until_ms=excluded.valid_until_ms,watermark=excluded.watermark,status=excluded.status,hard_hold=excluded.hard_hold,conflict_revision_floor=NULL",
                 (
@@ -640,16 +643,9 @@ class Store:
                     for r in rows[:limit]
                 ]
             else:
-                condition = {
-                    "OPEN": " AND resolved_at_ms IS NULL",
-                    "RESOLVED": " AND resolved_at_ms IS NOT NULL",
-                    "ALL": "",
-                }[status]
                 rows = c.execute(
-                    "SELECT * FROM operational_issues WHERE site_id=? AND sequence>?"
-                    + condition
-                    + " ORDER BY sequence LIMIT ?",
-                    (p.site, after, limit + 1),
+                    "SELECT * FROM operational_issues WHERE site_id=? AND sequence>? AND (?='ALL' OR (?='OPEN' AND resolved_at_ms IS NULL) OR (?='RESOLVED' AND resolved_at_ms IS NOT NULL)) ORDER BY sequence LIMIT ?",
+                    (p.site, after, status, status, status, limit + 1),
                 ).fetchall()
                 items = [self.issue_view(r) for r in rows[:limit]]
             return {
