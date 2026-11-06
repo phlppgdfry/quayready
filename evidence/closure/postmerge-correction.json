@@ -1,0 +1,83 @@
+{
+  "sourceBaseline": "e6f5fc9557abf68ab4ec317a3a2f983f676e3480",
+  "testedWorkingTreeFingerprint": "8bfe03bbf7c5ce7ccdc1882706c6cdbb58c5eca754aa046ca03e9d86a872e223",
+  "tests": {
+    "tests": 197,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "checks": [
+    {
+      "name": "ruff",
+      "command": "python -m ruff check src tests scripts",
+      "exitCode": 0
+    },
+    {
+      "name": "format",
+      "command": "python -m ruff format --check src tests scripts",
+      "exitCode": 0
+    },
+    {
+      "name": "mypy",
+      "command": "python -m mypy src",
+      "exitCode": 0
+    },
+    {
+      "name": "dependencies",
+      "command": "python -m pip check",
+      "exitCode": 0
+    },
+    {
+      "name": "frontend-format",
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "name": "bandit",
+      "command": "python -m bandit -r src -q",
+      "exitCode": 0
+    },
+    {
+      "name": "package",
+      "command": "python -m build --no-isolation",
+      "exitCode": 0
+    },
+    {
+      "name": "pytest",
+      "command": "python -m pytest -q --junitxml=evidence/rc/pytest.xml",
+      "exitCode": 0
+    },
+    {
+      "name": "showcase",
+      "command": "python scripts/build_showcase.py",
+      "exitCode": 0
+    },
+    {
+      "name": "local-secret-canaries",
+      "count": 56,
+      "leakedFiles": [],
+      "exitCode": 0
+    },
+    {
+      "name": "documentation-links",
+      "broken": [],
+      "exitCode": 0
+    },
+    {
+      "name": "tested-input-integrity",
+      "changed": [],
+      "exitCode": 0
+    },
+    {
+      "name": "final-evidence-export",
+      "command": "python scripts/build_showcase.py",
+      "exitCode": 0
+    }
+  ],
+  "resolvedRun": 42308117431,
+  "reportedFailure": "headers probe whole worker.tick elapsed 4.295 seconds; HTTP and SQLite durations were not separated",
+  "correction": "claim before timing, measure Worker.request only, finish after timing; retain elapsed<3.8, all state/attempt checks, and add claimed-row/finish assertions",
+  "productionCodeChanged": false,
+  "targetedTestsPassed": 25
+}
