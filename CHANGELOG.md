@@ -24,6 +24,8 @@ Final audit: full clean-wheel reproduction, full-history safety review, disabled
 
 ### Approved portfolio publication
 
+- Explicitly preserve the allowlisted `.nojekyll` control file in the Pages tar artifact as well as the verification preview artifact; the Pages action independently defaults to excluding hidden files.
+
 - Measure the HTTP deadline around the actual request, with claim/result database commits outside the timing interval; retain the 3.8-second assertion and all persisted-state/attempt checks. The original whole-tick measurement could not distinguish HTTP duration from unrelated hosted disk latency.
 
 - Drain the known POST body in the adversarial HTTP test peer before closing; otherwise an unintended TCP reset can mask the intended oversized-response rejection on hosted Linux. Production timeout/retry classification and all test assertions are preserved.
