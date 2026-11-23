@@ -4,7 +4,7 @@ A local synthetic integration lab for cross-dock evidence, independent review an
 
 ## Reproduce the real application
 
-Use CPython 3.13 with SQLite >=3.37 and JSON support. Obtain the application source from the owner while its repository is private. From the repository root:
+Use CPython 3.13 with SQLite >=3.37 and JSON support. Clone the public MIT-licensed source with `git clone https://github.com/phlppgdfry/quayready.git`, then `cd quayready`. From the repository root:
 
 ```sh
 python3.13 -m venv .venv

@@ -1,5 +1,7 @@
 # Release candidate verification — 0.2.0rc1
 
+> Historical checkpoint: current public-source access and rc2 publication are documented in [release closure](release-closure.md). Private-era statements below retain their original context.
+
 > Historical local RC audit: its no-push/hosted-not-run statements describe that checkpoint. For the subsequent authorised private branch/PR and actual Ubuntu results, see [hosted validation](hosted-validation.md). Original local evidence is preserved.
 [README](../README.md) · [Architecture](architecture.md) · [Publication decision](publication.md) · [Historical E1 evidence](verification.md)
 

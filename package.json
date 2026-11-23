@@ -1,11 +1,14 @@
 {
   "name": "quayready-release-tools",
   "private": true,
-  "version": "0.2.0-rc.1",
+  "version": "0.2.0-rc.2",
   "description": "Development-only accessibility engine and source formatter; the static site has no runtime dependencies",
   "scripts": {
     "format": "prettier --write showcase src/quayready/static",
     "check": "prettier --check showcase src/quayready/static"
   },
-  "devDependencies": {"axe-core": "4.11.0", "prettier": "3.6.2"}
+  "devDependencies": {
+    "axe-core": "4.11.0",
+    "prettier": "3.6.2"
+  }
 }

@@ -1,5 +1,7 @@
 # Private GitHub release-candidate handoff
 
+> Historical checkpoint: current public-source access and rc2 publication are documented in [release closure](release-closure.md). Private-era statements below retain their original context.
+
 > Historical checkpoint preserved. The owner subsequently authorised merge, static Pages publication and a private prerelease. See [current release closure](release-closure.md) for the final publication record.
 ## Verified scope
 

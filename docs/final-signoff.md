@@ -1,5 +1,7 @@
 # Final professional portfolio sign-off
 
+> Historical checkpoint: current public-source access and rc2 publication are documented in [release closure](release-closure.md). Private-era statements below retain their original context.
+
 > Historical checkpoint preserved. The owner subsequently authorised merge, static Pages publication and a private prerelease. See [current release closure](release-closure.md) for the final publication record.
 **PORTFOLIO RELEASE READY** for the defined synthetic, locally reproducible portfolio scope. This is an assistant-performed engineering/product audit, not an independent human certification or production approval. Public publication is deliberately not executed. The subsequent authorised private push, draft PR and successful hosted verification are recorded in [hosted validation](hosted-validation.md).
 
