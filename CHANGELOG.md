@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0rc2 — public source and portfolio handoff
+
+- Publish the existing MIT-licensed application source after a full-history and release-attachment review; keep separate company/recruitment research private.
+- Add working public repository navigation and clone instructions; align current documentation and version metadata with public source access.
+- Use GitHub private vulnerability reporting for responsible disclosure.
+- Remove account-wide Actions usage figures from the historical rc1 closure attachment before public exposure; retain its original private copy and document the redaction. Existing code tags and engineering outcomes are unchanged.
+- Preserve the verified architecture, application behavior, tests, genuine captures and historical checkpoints. No new product features or dependencies.
+
 ## 0.2.0rc1 — portfolio prerelease
 
 Final audit: full clean-wheel reproduction, full-history safety review, disabled exact Pages template, employer case study and concise interview/sign-off package. Application architecture preserved.

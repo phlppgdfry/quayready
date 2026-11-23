@@ -20,10 +20,12 @@ Use this wording only alongside the decisions and exercises you can personally e
 
 ## Limits
 
-Synthetic data, mock integration contracts and a local identity model; no real logistics deployment, physical departure authorisation, production certification, measured ROI or company endorsement. The public demonstration runs independently from the private Python backend. A real deployment requires process/supplier validation, supported identity, continuity, privacy, capacity and integration ownership.
+Synthetic data, mock integration contracts and a local identity model; no real logistics deployment, physical departure authorisation, production certification, measured ROI or company endorsement. The public demonstration runs independently from the locally executable Python backend. The MIT source and tests are publicly inspectable. A real deployment requires process/supplier validation, supported identity, continuity, privacy, capacity and integration ownership.
 
 ## Showcase and recruiter pitch
 
 **https://phlppgdfry.github.io/quayready/**
+
+Source and reproducible tests: **https://github.com/phlppgdfry/quayready**.
 
 “QuayReady shows how I approach the gap between operational processes and software systems: make missing evidence understandable, require accountable review and handle integration failures without hiding uncertainty. It combines a practical logistics scenario, a working Python/SQL/API implementation and reproducible engineering evidence, supported by an accessible public case study.”

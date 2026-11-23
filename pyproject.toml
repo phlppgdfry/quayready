@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quayready"
-version = "0.2.0rc1"
+version = "0.2.0rc2"
 readme = "README.md"
 license = "MIT"
 description = "Independent synthetic cross-dock integration and readiness lab"

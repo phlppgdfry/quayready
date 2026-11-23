@@ -1,4 +1,4 @@
-# Owner-authorised static-only deployment. Source remains private.
+# Owner-authorised static-only deployment. The Python backend is not deployed.
 name: Publish approved static portfolio
 on:
   workflow_dispatch:

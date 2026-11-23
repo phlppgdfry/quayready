@@ -10,11 +10,11 @@ This is an independent, AI-assisted portfolio and learning project with syntheti
 
 ![Genuine release-candidate workbench capture](evidence/rc/ui/hero.jpg)
 
-**Private GitHub release candidate `0.2.0rc1`.** Source remains private. [Explore the public showcase](https://phlppgdfry.github.io/quayready/). [Hosted verification](docs/hosted-validation.md) and [release closure](docs/release-closure.md) record the review and publication evidence. The GitHub prerelease is private; packages are not published. [Final sign-off](docs/final-signoff.md) · [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
+**Public portfolio release candidate `0.2.0rc2`.** [Source code and tests](https://github.com/phlppgdfry/quayready) are available under MIT. [Explore the public showcase](https://phlppgdfry.github.io/quayready/). [Hosted verification](docs/hosted-validation.md) and [release closure](docs/release-closure.md) record the review and publication evidence. The GitHub prereleases and their reviewed evidence are public; no Python or npm package is published. [Final sign-off](docs/final-signoff.md) · [Actual verification](docs/release-verification.md) · [Case study](docs/case-study.md) · [Architecture](docs/architecture.md) · [Release notes](docs/release-notes.md)
 
 ## Explore in a browser
 
-The independent static showcase has a step-by-step workflow simulation, failure/recovery lab, selectable architecture, real screenshots and a captioned authentic application walkthrough. Simulations are explicitly labelled and never call the private backend.
+The independent static showcase has a step-by-step workflow simulation, failure/recovery lab, selectable architecture, real screenshots and a captioned authentic application walkthrough. Simulations are explicitly labelled and never call the Python backend.
 
 After installing the development dependencies below:
 
@@ -40,9 +40,11 @@ The guarantee is **bounded at-least-once delivery attempts with an idempotent ta
 
 ## Quick start: real application
 
-Prerequisites: CPython **3.13**, SQLite **>=3.37** with JSON, Node **24** for development-only formatting/accessibility tools. The static output itself has zero runtime framework dependencies. No Docker or paid service is required. Run commands from the repository root:
+Prerequisites: CPython **3.13**, SQLite **>=3.37** with JSON, Node **24** for development-only formatting/accessibility tools. The static output itself has zero runtime framework dependencies. No Docker or paid service is required. Clone the public repository, then run from its root:
 
 ```sh
+git clone https://github.com/phlppgdfry/quayready.git
+cd quayready
 python3.13 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.lock
 .venv/bin/python -m pip install -e . --no-deps --no-build-isolation

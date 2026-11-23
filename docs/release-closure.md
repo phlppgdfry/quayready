@@ -1,20 +1,19 @@
-# QuayReady portfolio release closure
+# QuayReady public portfolio release closure
 
-Version **0.2.0rc1**, tag **v0.2.0-rc.1**. This remains a prerelease of an independent synthetic portfolio case, not a production certification.
+Current version: **0.2.0rc2**, tag **v0.2.0-rc.2**. This is an independent, AI-assisted synthetic portfolio case and prerelease, not a production certification.
 
 - Public showcase: **https://phlppgdfry.github.io/quayready/**.
-- Private application repository: https://github.com/phlppgdfry/quayready.
-- PR #1, source `work/ultimate-showcase-release`, target/default `implementation/e1`: https://github.com/phlppgdfry/quayready/pull/1.
-- Private prerelease and actual closure evidence: https://github.com/phlppgdfry/quayready/releases/tag/v0.2.0-rc.1.
-- Publication configuration, security boundary and reproducible deployment: [publication mechanism](publication.md).
-- Ready-to-use professional description: [portfolio handoff](portfolio-description.md).
+- Public MIT source, tests and CI: **https://github.com/phlppgdfry/quayready**.
+- Current release and public-safe execution evidence: **https://github.com/phlppgdfry/quayready/releases/tag/v0.2.0-rc.2**.
+- Reproducible publication/security boundary: [publication mechanism](publication.md).
+- Employer-facing description: [portfolio handoff](portfolio-description.md).
 
-The Release's `closure-evidence.json` attachment records the exact source/merge/tag SHAs, actual CI/deployment run IDs and conclusions, fresh local and package-install results, advisory/history scans, public HTTP/asset/hash checks and Chromium interaction results. It is generated only after execution. A static build or an intended URL alone does not establish public availability. The public reduced verification snapshot also identifies the deployed source commit/version and actual hosted job origin without exporting private raw evidence.
+The current release's publication evidence records actual source/merge/tag SHAs, local/clean-wheel tests, API response coverage, hosted CI/deployment run conclusions, advisory/secret checks, anonymous source/release access, public file hashes and Chromium interaction results. Evidence is generated only after execution. The public reduced snapshot identifies its deployed source commit/version without exposing local run configuration or raw test logs through Pages.
 
-Historical E1, RC, local sign-off and private-hosted handoff evidence are retained. Their earlier no-deployment statements describe those checkpoints; this closure and actual Release/deployment records supersede their publication status. No research repository, source visibility, Git history, feature-branch preservation or unrelated project is changed.
+Historical E1, rc1, local sign-off and private-source handoff records remain intact as checkpoints. Their previous private/no-deployment statements describe those dates; the current publication record supersedes their visibility status. The rc1 code tag is unchanged. Its original private closure attachment is retained locally, with only unnecessary account-wide usage figures redacted from its public copy and that redaction explicitly annotated. The separate company/recruitment strategy repository remains private and unchanged.
 
-The completed software demonstrates deterministic pallet/evidence reconciliation, independent version-bound review, atomic outbox, actual local HTTP/separate target storage, bounded retries, generation fencing, response-loss/restart recovery and GET-only terminal investigation. The browser-only public simulation is explicitly distinct from backend execution. Genuine captures and the captioned recording demonstrate actual local state.
+Delivered software: deterministic pallet/document reconciliation; independent evidence-version review; atomically persisted approval/outbox; real local HTTP to a separately persisted mock target; idempotent target effects; bounded retries; lease-generation fencing; response-loss/restart recovery; GET-only terminal investigation. The static site explains these boundaries with labelled simulations, genuine product captures, a captioned walkthrough and approved technical guides. Publishing source makes these claims inspectable; it does not assert production deployment or personal expertise.
 
-Independent human reproduction, unaided owner mastery and dedicated screen-reader usability remain unverified. Dedicated Safari/Firefox checks are excluded, not claimed passed. No operational ROI, customer deployment, regulatory compliance, availability guarantee or professional client experience is asserted. See the [interview exercises](interview-package.md); optional production considerations are not new portfolio release blockers.
+Known limits: synthetic/mock contracts and local identity/administrator assumptions; no real vendor connection, physical departure/customs authority, operational ROI, availability guarantee, company endorsement or compliance certification. Dedicated Safari/Firefox and screen-reader testing, another person's cold start and the owner's unaided mastery remain unverified. Complete [the learning/interview exercises](interview-package.md) independently before claiming personal competence.
 
-No further feature development is justified without a confirmed defect or a newly agreed requirement. The remaining personal work is to explain and modify the project independently, recording AI assistance honestly.
+The existing architecture and product scope are complete for the portfolio. Further development requires a confirmed defect or a newly agreed requirement; no speculative feature roadmap is needed.
